@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>mkjose</title>
+  <link rel="stylesheet" href="css/index.css">
+  <script src="script/index.js"></script>
+</head>
+<body class="font-default">
+  <div id="title">mkjose</div>
+
+  <div id="content">
+    <form id="jose-input" name="jose-input" action="post">
+      <table border="1">
+        <tr>
+          <td rowspan="2">Payload</td>
+          <td colspan="2">
+            <textarea id="payload" name="payload" rows="10" cols="80" spellcheck="false"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td>Sample</td>
+          <td>
+            <button type="button" onClick="payload_clear();">Clear</button>
+            <button type="button" onClick="payload_request_object();">Request Object</button>
+          </td>
+        </tr>
+        <tr>
+          <td rowspan="3">Signing</td>
+          <td>Algorithm</td>
+          <td>
+            <select id="signing-alg" name="signing-alg">
+              <option value="none"><code>none</code></option>
+              <option value="HS256"><code>HS256</code> (HMAC using SHA-256)</option>
+              <option value="HS384"><code>HS384</code> (HMAC using SHA-384)</option>
+              <option value="HS512"><code>HS512</code> (HMAC using SHA-512)</option>
+              <option value="RS256"><code>RS256</code> (RSASSA-PKCS1-v1_5 using SHA-256)</option>
+              <option value="RS384"><code>RS384</code> (RSASSA-PKCS1-v1_5 using SHA-384)</option>
+              <option value="RS512"><code>RS512</code> (RSASSA-PKCS1-v1_5 using SHA-512)</option>
+              <option value="ES256"><code>ES256</code> (ECDSA using P-256 and SHA-256)</option>
+              <option value="ES384"><code>ES384</code> (ECDSA using P-384 and SHA-384)</option>
+              <option value="ES512"><code>ES512</code> (ECDSA using P-521 and SHA-512)</option>
+              <option value="PS256"><code>PS256</code> (RSASSA-PSS using SHA-256 and MGF1 with SHA-256)</option>
+              <option value="PS256"><code>PS384</code> (RSASSA-PSS using SHA-384 and MGF1 with SHA-384)</option>
+              <option value="PS256"><code>PS512</code> (RSASSA-PSS using SHA-512 and MGF1 with SHA-512)</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>Key (JWK)</td>
+          <td>
+            <textarea id="jwk-signing-alg" name="jwk-signing-alg" rows="10" cols="65" spellcheck="false"></textarea>
+          </td>
+        </tr>
+        <tr>
+          <td>Sample</td>
+          <td>
+            <button type="button" onClick="signing_alg_clear();">Clear</button>
+            <button type="button" onClick="signing_alg_rsa();">RSA</button>
+            <button type="button" onClick="signing_alg_ec();">EC</button>
+            <button type="button" onClick="signing_alg_oct();">oct</button>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="3">
+            <button id="generate" name="generate" type="button" onClick="generate_jose();">Generate</button>
+          </td>
+        </tr>
+      </table>
+    </form>
+
+    <p id="jose-error" name="jose-error"></p>
+
+    <table border="1">
+      <tr>
+        <td>Output</td>
+        <td>
+          <textarea id="jose-output" name="jose-output" rows="10" cols="80" spellcheck="false"></textarea>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <button id="copy-to-clipboard" name="copy-to-clipboard" type="button" onClick="copy_to_clipboard();">Copy to Clipboard</button>
+        </td>
+    </table>
+
+    <dialog id="dialog-payload-request-object">
+      <form action="post">
+        <table border="1">
+          <tr>
+            <td><code>exp</code></td>
+            <td><input id="ro-exp" type="datetime-local"></td>
+            <td><button type="button" onClick="clear_by_id('ro-exp');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>iss</code></td>
+            <td><input id="ro-iss" type="text" size="50"></td>
+            <td><button type="button" onClick="clear_by_id('ro-iss');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>aud</code></td>
+            <td><input id="ro-aud" type="text" size="50"></td>
+            <td><button type="button" onClick="clear_by_id('ro-aud');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>scope</code></td>
+            <td><input id="ro-scope" type="text" size="50"></td>
+            <td><button type="button" onClick="clear_by_id('ro-scope');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>response_type</code></td>
+            <td><input id="ro-response_type" type="text" size="50"></td>
+            <td><button type="button" onClick="clear_by_id('ro-response_type');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>client_id</code></td>
+            <td><input id="ro-client_id" type="text" size="50"></td>
+            <td><button type="button" onClick="clear_by_id('ro-client_id');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>redirect_uri</code></td>
+            <td><input id="ro-redirect_uri" type="text" size="50"></td>
+            <td><button type="button" onClick="clear_by_id('ro-redirect_uri');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>state</code></td>
+            <td><input id="ro-state" type="text" size="50"></td>
+            <td><button type="button" onClick="clear_by_id('ro-state');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>nonce</code></td>
+            <td><input id="ro-nonce" type="text" size="50"></td>
+            <td><button type="button" onClick="clear_by_id('ro-nonce');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>code_challenge</code></td>
+            <td><input id="ro-code_challenge" type="text" size="50"></td>
+            <td><button type="button" onClick="clear_by_id('ro-code_challenge');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>code_challenge_method</code></td>
+            <td>
+              <select id="ro-code_challenge_method">
+                <option value="">Select</option>
+                <option value="plain"><code>plain</code></option>
+                <option value="S256"><code>S256</code></option>
+              </select>
+            </td>
+            <td><button type="button" onClick="clear_by_id('ro-code_challenge_method');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>claims</code></td>
+            <td><textarea id="ro-claims" rows="5" cols="50" spellcheck="false"></textarea></td>
+            <td><button type="button" onClick="clear_by_id('ro-claims');">Clear</td>
+          </tr>
+          <tr>
+            <td>Arbitrary JSON</td>
+            <td><textarea id="ro-arbitrary_json" rows="5" cols="50" spellcheck="false"></textarea></td>
+            <td><button type="button" onClick="clear_by_id('ro-arbitrary_json');">Clear</td>
+          </tr>
+        </table>
+
+        <button type="button" onClick="dialog_payload_request_object_apply();">Apply</button>
+        <button type="button" onClick="dialog_payload_request_object_close();">Close</button>
+      </form>
+    </dialog>
+  </div>
+
+</body>
+</html>
