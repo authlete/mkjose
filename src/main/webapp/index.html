@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>mkjose</title>
-  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" type="text/css" href="css/index.css">
+  <link rel="stylesheet" type="text/css" href="css/dialog-polyfill.css"/>
   <script src="script/index.js"></script>
+  <script src="script/dialog-polyfill.js"></script>
 </head>
 <body class="font-default">
   <div id="title">mkjose</div>
@@ -252,6 +254,15 @@
       </form>
     </dialog>
   </div>
+
+  <script>
+    (function() {
+      var dialogs = document.querySelectorAll('dialog');
+      for (var dialog of dialogs) {
+        dialogPolyfill.registerDialog(dialog);
+      }
+    })();
+  </script>
 
 </body>
 </html>
