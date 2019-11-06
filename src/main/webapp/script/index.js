@@ -91,10 +91,17 @@ function payload_clear() {
   payload_set('');
 }
 
-function payload_request_object() {
-  var dialog = document.getElementById('dialog-payload-request-object');
-
+function show_dialog(id) {
+  var dialog = document.getElementById(id);
   dialog.showModal();
+}
+
+function payload_request_object() {
+  show_dialog('dialog-payload-request-object');
+}
+
+function payload_ciba() {
+  show_dialog('dialog-payload-ciba');
 }
 
 function add_entry(data, key, id) {
@@ -105,6 +112,23 @@ function add_entry(data, key, id) {
   }
 }
 
+function add_entry_datetime(data, key, id) {
+  var val = document.getElementById(id).value;
+
+  if (val != null && val != '') {
+    data[key] = new Date(val).getTime() / 1000;
+  }
+}
+
+function convert_to_number(data, key) {
+  if (!(key in data)) {
+    return;
+  }
+
+  var value = data[key];
+  data[key] = parseInt(value, 10);
+}
+
 function clear_by_id(id) {
   document.getElementById(id).value = '';
 }
@@ -113,21 +137,20 @@ function dialog_payload_request_object_apply() {
   var data = {};
 
   // 'exp'
-  var exp = document.getElementById('ro-exp').value;
-  if (exp != null && exp != '') {
-    data['exp'] = new Date(exp).getTime() / 1000;
-  }
+  add_entry_datetime(data, 'exp', 'ro-exp');
 
-  // String key and string value
+  // Keys
   var keys = [
     'iss', 'aud', 'scope', 'response_type', 'client_id', 'redirect_uri',
-    'state', 'nonce', 'code_challenge'
+    'state', 'nonce', 'max_age', 'code_challenge'
   ];
 
   for (let i = 0; i < keys.length; i++) {
     var key = keys[i];
     add_entry(data, key, 'ro-' + key);
   }
+
+  convert_to_number(data, 'max_age');
 
   // 'code_challenge_method'
   var ccm = document.getElementById('ro-code_challenge_method').value;
@@ -166,6 +189,40 @@ function dialog_payload_request_object_apply() {
 
 function dialog_payload_request_object_close() {
   var dialog = document.getElementById('dialog-payload-request-object');
+
+  dialog.close();
+}
+
+function dialog_payload_ciba_apply() {
+  var data = {};
+
+  // 'exp'
+  add_entry_datetime(data, 'exp', 'ciba-exp');
+
+  // 'nbf'
+  add_entry_datetime(data, 'nbf', 'ciba-nbf');
+
+  // Keys
+  var keys = [
+    'iss', 'aud', 'scope', 'client_notification_token', 'acr_values',
+    'login_hint_token', 'id_token_hint', 'login_hint', 'binding_message',
+    'user_code', 'requested_expiry', 'request_context'
+  ];
+
+  for (let i = 0; i < keys.length; i++) {
+    var key = keys[i];
+    add_entry(data, key, 'ciba-' + key);
+  }
+
+  convert_to_number(data, 'requested_expiry');
+
+  var json = JSON.stringify(data, null, 2);
+
+  payload_set(json);
+}
+
+function dialog_payload_ciba_close() {
+  var dialog = document.getElementById('dialog-payload-ciba');
 
   dialog.close();
 }

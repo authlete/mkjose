@@ -24,6 +24,7 @@
           <td>
             <button type="button" onClick="payload_clear();">Clear</button>
             <button type="button" onClick="payload_request_object();">Request Object</button>
+            <button type="button" onClick="payload_ciba();">CIBA</button>
           </td>
         </tr>
         <tr>
@@ -95,47 +96,52 @@
           </tr>
           <tr>
             <td><code>iss</code></td>
-            <td><input id="ro-iss" type="text" size="50"></td>
+            <td><input id="ro-iss" type="text" size="60"></td>
             <td><button type="button" onClick="clear_by_id('ro-iss');">Clear</td>
           </tr>
           <tr>
             <td><code>aud</code></td>
-            <td><input id="ro-aud" type="text" size="50"></td>
+            <td><input id="ro-aud" type="text" size="60"></td>
             <td><button type="button" onClick="clear_by_id('ro-aud');">Clear</td>
           </tr>
           <tr>
             <td><code>scope</code></td>
-            <td><input id="ro-scope" type="text" size="50"></td>
+            <td><input id="ro-scope" type="text" size="60"></td>
             <td><button type="button" onClick="clear_by_id('ro-scope');">Clear</td>
           </tr>
           <tr>
             <td><code>response_type</code></td>
-            <td><input id="ro-response_type" type="text" size="50"></td>
+            <td><input id="ro-response_type" type="text" size="60"></td>
             <td><button type="button" onClick="clear_by_id('ro-response_type');">Clear</td>
           </tr>
           <tr>
             <td><code>client_id</code></td>
-            <td><input id="ro-client_id" type="text" size="50"></td>
+            <td><input id="ro-client_id" type="text" size="60"></td>
             <td><button type="button" onClick="clear_by_id('ro-client_id');">Clear</td>
           </tr>
           <tr>
             <td><code>redirect_uri</code></td>
-            <td><input id="ro-redirect_uri" type="text" size="50"></td>
+            <td><input id="ro-redirect_uri" type="text" size="60"></td>
             <td><button type="button" onClick="clear_by_id('ro-redirect_uri');">Clear</td>
           </tr>
           <tr>
             <td><code>state</code></td>
-            <td><input id="ro-state" type="text" size="50"></td>
+            <td><input id="ro-state" type="text" size="60"></td>
             <td><button type="button" onClick="clear_by_id('ro-state');">Clear</td>
           </tr>
           <tr>
             <td><code>nonce</code></td>
-            <td><input id="ro-nonce" type="text" size="50"></td>
+            <td><input id="ro-nonce" type="text" size="60"></td>
             <td><button type="button" onClick="clear_by_id('ro-nonce');">Clear</td>
           </tr>
           <tr>
+            <td><code>max_age</code></td>
+            <td><input id="ro-max_age" type="number" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ro-max_age');">Clear</td>
+          </tr>
+          <tr>
             <td><code>code_challenge</code></td>
-            <td><input id="ro-code_challenge" type="text" size="50"></td>
+            <td><input id="ro-code_challenge" type="text" size="60"></td>
             <td><button type="button" onClick="clear_by_id('ro-code_challenge');">Clear</td>
           </tr>
           <tr>
@@ -163,6 +169,86 @@
 
         <button type="button" onClick="dialog_payload_request_object_apply();">Apply</button>
         <button type="button" onClick="dialog_payload_request_object_close();">Close</button>
+      </form>
+    </dialog>
+
+    <dialog id="dialog-payload-ciba">
+      <form action="post">
+        <table border="1">
+          <tr>
+            <td><code>exp</code></td>
+            <td><input id="ciba-exp" type="datetime-local"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-exp');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>nbf</code></td>
+            <td><input id="ciba-nbf" type="datetime-local"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-nbf');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>iss</code></td>
+            <td><input id="ciba-iss" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-iss');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>aud</code></td>
+            <td><input id="ciba-aud" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-aud');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>scope</code></td>
+            <td><input id="ciba-scope" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-scope');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>client_notification_token</code></td>
+            <td><input id="ciba-client_notification_token" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-client_notification_token');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>acr_values</code></td>
+            <td><input id="ciba-acr_values" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-acr_values');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>login_hint_token</code></td>
+            <td><input id="ciba-login_hint_token" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-login_hint_token');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>id_token_hint</code></td>
+            <td><input id="ciba-id_token_hint" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-id_token_hint');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>login_hint</code></td>
+            <td><input id="ciba-login_hint" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-login_hint');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>binding_message</code></td>
+            <td><input id="ciba-binding_message" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-binding_message');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>user_code</code></td>
+            <td><input id="ciba-user_code" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-user_code');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>requested_expiry</code></td>
+            <td><input id="ciba-requested_expiry" type="number" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-requested_expiry');">Clear</td>
+          </tr>
+          <tr>
+            <td><code>request_context</code></td>
+            <td><input id="ciba-request_context" type="text" size="60"></td>
+            <td><button type="button" onClick="clear_by_id('ciba-request_context');">Clear</td>
+          </tr>
+        </table>
+
+        <button type="button" onClick="dialog_payload_ciba_apply();">Apply</button>
+        <button type="button" onClick="dialog_payload_ciba_close();">Close</button>
       </form>
     </dialog>
   </div>
