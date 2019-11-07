@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang=ja>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
@@ -12,30 +12,30 @@
 <body class="font-default">
   <div id="title">mkjose</div>
   <div id="language-switch">
-    English |
-    <a href="index.ja.html">日本語</a>
+    <a href="index.html">English</a> |
+    日本語
   </div>
 
   <div id="content">
     <form id="jose-input" name="jose-input" action="post">
       <table border="1">
         <tr>
-          <td rowspan="2">Payload</td>
+          <td rowspan="2">ペイロード</td>
           <td colspan="2">
             <textarea id="payload" name="payload" rows="10" cols="80" spellcheck="false"></textarea>
           </td>
         </tr>
         <tr>
-          <td>Sample</td>
+          <td>サンプル</td>
           <td>
-            <button type="button" onClick="payload_clear();">Clear</button>
-            <button type="button" onClick="payload_request_object();">Request Object</button>
-            <button type="button" onClick="payload_ciba();">CIBA</button>
+            <button type="button" onClick="payload_clear();">消去</button>
+            <button type="button" onClick="payload_request_object();">リクエストオブジェクト</button>
+            <button type="button" onClick="payload_ciba();">ＣＩＢＡ</button>
           </td>
         </tr>
         <tr>
-          <td rowspan="3">Signing</td>
-          <td>Algorithm</td>
+          <td rowspan="3">署名</td>
+          <td>アルゴリズム</td>
           <td>
             <select id="signing-alg" name="signing-alg">
               <option value="none"><code>none</code></option>
@@ -55,23 +55,23 @@
           </td>
         </tr>
         <tr>
-          <td>Key (JWK)</td>
+          <td>鍵 (JWK)</td>
           <td>
             <textarea id="jwk-signing-alg" name="jwk-signing-alg" rows="10" cols="65" spellcheck="false"></textarea>
           </td>
         </tr>
         <tr>
-          <td>Sample</td>
+          <td>サンプル</td>
           <td>
-            <button type="button" onClick="signing_alg_clear();">Clear</button>
-            <button type="button" onClick="signing_alg_rsa();">RSA</button>
-            <button type="button" onClick="signing_alg_ec();">EC</button>
-            <button type="button" onClick="signing_alg_oct('Input the shared key');">oct</button>
+            <button type="button" onClick="signing_alg_clear();">消去</button>
+            <button type="button" onClick="signing_alg_rsa();">ＲＳＡ</button>
+            <button type="button" onClick="signing_alg_ec();">ＥＣ</button>
+            <button type="button" onClick="signing_alg_oct('共有鍵を入力してください');">ｏｃｔ</button>
           </td>
         </tr>
         <tr>
           <td colspan="3">
-            <button id="generate" name="generate" type="button" onClick="generate_jose();">Generate</button>
+            <button id="generate" name="generate" type="button" onClick="generate_jose();">生成する</button>
           </td>
         </tr>
       </table>
@@ -81,14 +81,14 @@
 
     <table border="1">
       <tr>
-        <td>Output</td>
+        <td>出力</td>
         <td>
           <textarea id="jose-output" name="jose-output" rows="10" cols="80" spellcheck="false"></textarea>
         </td>
       </tr>
       <tr>
         <td colspan="2">
-          <button id="copy-to-clipboard" name="copy-to-clipboard" type="button" onClick="copy_to_clipboard();">Copy to Clipboard</button>
+          <button id="copy-to-clipboard" name="copy-to-clipboard" type="button" onClick="copy_to_clipboard();">クリップボードにコピー</button>
         </td>
     </table>
 
@@ -98,57 +98,57 @@
           <tr>
             <td><code>exp</code></td>
             <td><input id="ro-exp" type="datetime-local"></td>
-            <td><button type="button" onClick="clear_by_id('ro-exp');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-exp');">消去</td>
           </tr>
           <tr>
             <td><code>iss</code></td>
             <td><input id="ro-iss" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ro-iss');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-iss');">消去</td>
           </tr>
           <tr>
             <td><code>aud</code></td>
             <td><input id="ro-aud" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ro-aud');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-aud');">消去</td>
           </tr>
           <tr>
             <td><code>scope</code></td>
             <td><input id="ro-scope" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ro-scope');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-scope');">消去</td>
           </tr>
           <tr>
             <td><code>response_type</code></td>
             <td><input id="ro-response_type" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ro-response_type');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-response_type');">消去</td>
           </tr>
           <tr>
             <td><code>client_id</code></td>
             <td><input id="ro-client_id" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ro-client_id');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-client_id');">消去</td>
           </tr>
           <tr>
             <td><code>redirect_uri</code></td>
             <td><input id="ro-redirect_uri" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ro-redirect_uri');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-redirect_uri');">消去</td>
           </tr>
           <tr>
             <td><code>state</code></td>
             <td><input id="ro-state" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ro-state');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-state');">消去</td>
           </tr>
           <tr>
             <td><code>nonce</code></td>
             <td><input id="ro-nonce" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ro-nonce');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-nonce');">消去</td>
           </tr>
           <tr>
             <td><code>max_age</code></td>
             <td><input id="ro-max_age" type="number" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ro-max_age');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-max_age');">消去</td>
           </tr>
           <tr>
             <td><code>code_challenge</code></td>
             <td><input id="ro-code_challenge" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ro-code_challenge');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-code_challenge');">消去</td>
           </tr>
           <tr>
             <td><code>code_challenge_method</code></td>
@@ -159,23 +159,23 @@
                 <option value="S256"><code>S256</code></option>
               </select>
             </td>
-            <td><button type="button" onClick="clear_by_id('ro-code_challenge_method');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-code_challenge_method');">消去</td>
           </tr>
           <tr>
             <td><code>claims</code></td>
             <td><textarea id="ro-claims" rows="5" cols="50" spellcheck="false"></textarea></td>
-            <td><button type="button" onClick="clear_by_id('ro-claims');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-claims');">消去</td>
           </tr>
           <tr>
             <td>Arbitrary JSON</td>
             <td><textarea id="ro-arbitrary_json" rows="5" cols="50" spellcheck="false"></textarea></td>
-            <td><button type="button" onClick="clear_by_id('ro-arbitrary_json');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ro-arbitrary_json');">消去</td>
           </tr>
         </table>
 
-        <button type="button" onClick="dialog_payload_request_object_apply();">Apply</button>
-        <button type="button" onClick="dialog_payload_request_object_close();">Close</button>
-        <button type="button" onClick="dialog_payload_request_object_apply_and_close();">Apply & Close</button>
+        <button type="button" onClick="dialog_payload_request_object_apply();">適用</button>
+        <button type="button" onClick="dialog_payload_request_object_close();">閉じる</button>
+        <button type="button" onClick="dialog_payload_request_object_apply_and_close();">適用して閉じる</button>
       </form>
     </dialog>
 
@@ -185,78 +185,78 @@
           <tr>
             <td><code>exp</code></td>
             <td><input id="ciba-exp" type="datetime-local"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-exp');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-exp');">消去</td>
           </tr>
           <tr>
             <td><code>nbf</code></td>
             <td><input id="ciba-nbf" type="datetime-local"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-nbf');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-nbf');">消去</td>
           </tr>
           <tr>
             <td><code>iss</code></td>
             <td><input id="ciba-iss" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-iss');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-iss');">消去</td>
           </tr>
           <tr>
             <td><code>aud</code></td>
             <td><input id="ciba-aud" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-aud');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-aud');">消去</td>
           </tr>
           <tr>
             <td><code>scope</code></td>
             <td><input id="ciba-scope" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-scope');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-scope');">消去</td>
           </tr>
           <tr>
             <td><code>client_notification_token</code></td>
             <td><input id="ciba-client_notification_token" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-client_notification_token');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-client_notification_token');">消去</td>
           </tr>
           <tr>
             <td><code>acr_values</code></td>
             <td><input id="ciba-acr_values" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-acr_values');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-acr_values');">消去</td>
           </tr>
           <tr>
             <td><code>login_hint_token</code></td>
             <td><input id="ciba-login_hint_token" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-login_hint_token');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-login_hint_token');">消去</td>
           </tr>
           <tr>
             <td><code>id_token_hint</code></td>
             <td><input id="ciba-id_token_hint" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-id_token_hint');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-id_token_hint');">消去</td>
           </tr>
           <tr>
             <td><code>login_hint</code></td>
             <td><input id="ciba-login_hint" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-login_hint');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-login_hint');">消去</td>
           </tr>
           <tr>
             <td><code>binding_message</code></td>
             <td><input id="ciba-binding_message" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-binding_message');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-binding_message');">消去</td>
           </tr>
           <tr>
             <td><code>user_code</code></td>
             <td><input id="ciba-user_code" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-user_code');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-user_code');">消去</td>
           </tr>
           <tr>
             <td><code>requested_expiry</code></td>
             <td><input id="ciba-requested_expiry" type="number" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-requested_expiry');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-requested_expiry');">消去</td>
           </tr>
           <tr>
             <td><code>request_context</code></td>
             <td><input id="ciba-request_context" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-request_context');">Clear</td>
+            <td><button type="button" onClick="clear_by_id('ciba-request_context');">消去</td>
           </tr>
         </table>
 
-        <button type="button" onClick="dialog_payload_ciba_apply();">Apply</button>
-        <button type="button" onClick="dialog_payload_ciba_close();">Close</button>
-        <button type="button" onClick="dialog_payload_ciba_apply_and_close();">Apply & Close</button>
+        <button type="button" onClick="dialog_payload_ciba_apply();">適用</button>
+        <button type="button" onClick="dialog_payload_ciba_close();">閉じる</button>
+        <button type="button" onClick="dialog_payload_ciba_apply_and_close();">適用して閉じる</button>
       </form>
     </dialog>
   </div>

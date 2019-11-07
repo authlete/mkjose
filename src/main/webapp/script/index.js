@@ -193,6 +193,11 @@ function dialog_payload_request_object_close() {
   dialog.close();
 }
 
+function dialog_payload_request_object_apply_and_close() {
+  dialog_payload_request_object_apply();
+  dialog_payload_request_object_close();
+}
+
 function dialog_payload_ciba_apply() {
   var data = {};
 
@@ -225,6 +230,11 @@ function dialog_payload_ciba_close() {
   var dialog = document.getElementById('dialog-payload-ciba');
 
   dialog.close();
+}
+
+function dialog_payload_ciba_apply_and_close() {
+  dialog_payload_ciba_apply();
+  dialog_payload_ciba_close();
 }
 
 function signing_alg_set(index, jwk) {
@@ -286,8 +296,8 @@ function signing_alg_ec() {
   signing_alg_set(7 /*ES256*/, jwk);
 }
 
-function signing_alg_oct() {
-  var shared_key = prompt("Input the shared key");
+function signing_alg_oct(prompt_str) {
+  var shared_key = prompt(prompt_str);
 
   if (shared_key == null || shared_key == '') {
     return;

@@ -6,6 +6,12 @@
   font-size: 200%;
 }
 
+#language-switch {
+  text-align: right;
+  padding-right: 20px;
+  font-size: 90%;
+}
+
 #content {
   padding: 20px;
 }
