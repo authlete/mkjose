@@ -6,3 +6,7 @@
 .modal-content {
   width: 800px;
 }
+
+.title {
+  margin-bottom: 3rem !important;
+}
