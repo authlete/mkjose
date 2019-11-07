@@ -26,9 +26,18 @@ function handle_response(res) {
   var err = document.getElementById('jose-error');
 
   res.text().then(function(text) {
-    out.innerHTML = res.ok ? text : '';
-    err.innerHTML = res.ok ? '' : 'Error: ' + text;
+    if (res.ok) {
+      out.innerHTML = text;
+      err.innerHTML = '';
+      document.getElementById('jose-output').scrollIntoView();
+    } else {
+      out.innerHTML = '';
+      err.innerHTML = 'Error: ' + text;
+      document.getElementById('jose-error').scrollIntoView();
+    }
   });
+
+  document.getElementById('jose-output').scrollIntoView();
 }
 
 function check_payload() {
@@ -91,17 +100,24 @@ function payload_clear() {
   payload_set('');
 }
 
-function show_dialog(id) {
-  var dialog = document.getElementById(id);
-  dialog.showModal();
+function open_modal(id) {
+  var target = document.getElementById(id);
+  document.documentElement.classList.add('is-clipped');
+  target.classList.add('is-active');
+}
+
+function close_modal(id) {
+  var target = document.getElementById(id);
+  document.documentElement.classList.remove('is-clipped');
+  target.classList.remove('is-active');
 }
 
 function payload_request_object() {
-  show_dialog('dialog-payload-request-object');
+  open_modal('modal-payload-request-object');
 }
 
 function payload_ciba() {
-  show_dialog('dialog-payload-ciba');
+  open_modal('modal-payload-ciba');
 }
 
 function add_entry(data, key, id) {
@@ -133,7 +149,7 @@ function clear_by_id(id) {
   document.getElementById(id).value = '';
 }
 
-function dialog_payload_request_object_apply() {
+function modal_payload_request_object_apply() {
   var data = {};
 
   // 'exp'
@@ -187,18 +203,16 @@ function dialog_payload_request_object_apply() {
   payload_set(json);
 }
 
-function dialog_payload_request_object_close() {
-  var dialog = document.getElementById('dialog-payload-request-object');
-
-  dialog.close();
+function modal_payload_request_object_close() {
+  close_modal('modal-payload-request-object');
 }
 
-function dialog_payload_request_object_apply_and_close() {
-  dialog_payload_request_object_apply();
-  dialog_payload_request_object_close();
+function modal_payload_request_object_apply_and_close() {
+  modal_payload_request_object_apply();
+  modal_payload_request_object_close();
 }
 
-function dialog_payload_ciba_apply() {
+function modal_payload_ciba_apply() {
   var data = {};
 
   // 'exp'
@@ -226,20 +240,18 @@ function dialog_payload_ciba_apply() {
   payload_set(json);
 }
 
-function dialog_payload_ciba_close() {
-  var dialog = document.getElementById('dialog-payload-ciba');
-
-  dialog.close();
+function modal_payload_ciba_close() {
+  close_modal('modal-payload-ciba');
 }
 
-function dialog_payload_ciba_apply_and_close() {
-  dialog_payload_ciba_apply();
-  dialog_payload_ciba_close();
+function modal_payload_ciba_apply_and_close() {
+  modal_payload_ciba_apply();
+  modal_payload_ciba_close();
 }
 
 function signing_alg_set(index, jwk) {
   document.getElementById('signing-alg').selectedIndex = index;
-  document.getElementById('jwk-signing-alg').innerHTML = jwk;
+  document.getElementById('jwk-signing-alg').value = jwk;
 }
 
 function signing_alg_clear() {

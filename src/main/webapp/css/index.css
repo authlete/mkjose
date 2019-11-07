@@ -1,67 +1,8 @@
-#title {
-  background: #333;
-  color: white;
-  padding: 0.5em;
-  margin: 0;
-  font-size: 200%;
+
+.level {
+  margin-bottom: 0.5rem!important;
 }
 
-#language-switch {
-  text-align: right;
-  padding-right: 20px;
-  font-size: 90%;
-}
-
-#content {
-  padding: 20px;
-}
-
-#generate, #copy-to-clipboard {
-  display: block;
-  width: 100%;
-  padding: 10px;
-}
-
-#jose-output {
-  padding: 10px;
-  border: 1px solid black;
-}
-
-#jose-error {
-  padding: 10px;
-  color: darkred;
-}
-
-body {
-  margin: 0;
-  text-shadow: none;
-}
-
-table {
-  border-collapse: collapse;
-  margin-bottom: 20px;
-}
-
-td {
-  padding: 10px;
-}
-
-textarea {
-  font-family: 'Courier New', Consolas, monospace;
-}
-
-button {
-  background-color: lightgray;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-.font-default
-{
-  font-family: 'Source Sans Pro', 'Helvetica Neue', 'Segoe UI', 'Arial', sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-td.sample button {
-  height: 2.2em;
+.modal-content {
+  width: 800px;
 }
