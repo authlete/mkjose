@@ -27,10 +27,10 @@
         </tr>
         <tr>
           <td>サンプル</td>
-          <td>
+          <td class="sample">
             <button type="button" onClick="payload_clear();">消去</button>
             <button type="button" onClick="payload_request_object();">リクエストオブジェクト</button>
-            <button type="button" onClick="payload_ciba();">ＣＩＢＡ</button>
+            <button type="button" onClick="payload_ciba();">CIBA</button>
           </td>
         </tr>
         <tr>
@@ -65,11 +65,11 @@
         </tr>
         <tr>
           <td>サンプル</td>
-          <td>
+          <td class="sample">
             <button type="button" onClick="signing_alg_clear();">消去</button>
-            <button type="button" onClick="signing_alg_rsa();">ＲＳＡ</button>
-            <button type="button" onClick="signing_alg_ec();">ＥＣ</button>
-            <button type="button" onClick="signing_alg_oct('共有鍵を入力してください');">ｏｃｔ</button>
+            <button type="button" onClick="signing_alg_rsa();">RSA</button>
+            <button type="button" onClick="signing_alg_ec();">EC</button>
+            <button type="button" onClick="signing_alg_oct('共有鍵を入力してください');">oct</button>
           </td>
         </tr>
         <tr>
@@ -263,6 +263,27 @@
       </form>
     </dialog>
   </div>
+
+  <hr/>
+  <ul>
+    <li>
+      このサービスは <a href="https://www.authlete.com/ja/">株式会社 Authlete</a>
+      により保証無しの無料サービスとして提供されています。
+    </li>
+    <li>
+      このサーバーは入力されたデータや鍵を一切記録しません。
+    </li>
+    <li>
+      このサーバーのソースコードは GitHub 上の
+      <a href="https://github.com/authlete/mkjose">authlete/mkjose</a>
+      で公開されています。
+    </li>
+    <li>
+      裏で使用されている JOSE 生成ツールのソースコードは GitHub 上の
+      <a href="https://github.com/authlete/authlete-jose">authlete/authlete-jose</a>
+      で公開されています。
+    </li>
+  </ul>
 
   <script>
     (function() {

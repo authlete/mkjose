@@ -61,3 +61,7 @@ button {
   font-family: 'Source Sans Pro', 'Helvetica Neue', 'Segoe UI', 'Arial', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+td.sample button {
+  height: 2.2em;
+}
