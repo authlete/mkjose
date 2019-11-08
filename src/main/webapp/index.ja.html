@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang=ja>
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
@@ -110,7 +110,7 @@
             </div>
             <div class="level-item">
               <div class=field>
-                <a class="button is-light" onClick="signing_alg_oct('Input the shared key');">oct</a>
+                <a class="button is-light" onClick="signing_alg_oct('共有鍵を入力してください');">oct</a>
               </div>
             </div>
             <div class="level-item">
@@ -155,7 +155,7 @@
     <div class="modal-content">
       <div class="card">
         <header class="card-header">
-          <p class="card-header-title">Payload for Request Object</p>
+          <p class="card-header-title">リクエストオブジェクトのペイロード</p>
           <a class="card-header-icon" aria-label="more options">
               <button class="delete" aria-label="close" onClick="close_modal('modal-payload-request-object');"></button>
           </a>
@@ -221,7 +221,7 @@
               <td><code>code_challenge_method</code></td>
               <td>
                 <select id="ro-code_challenge_method">
-                  <option value="">Select</option>
+                  <option value="">選択する...</option>
                   <option value="plain"><code>plain</code></option>
                   <option value="S256"><code>S256</code></option>
                 </select>
@@ -234,16 +234,16 @@
               <td><button type="button" onClick="clear_by_id('ro-claims');"><i class="far fa-trash-alt"></i></td>
             </tr>
             <tr>
-              <td>Arbitrary JSON</td>
+              <td>任意の JSON</td>
               <td><textarea id="ro-arbitrary_json" rows="5" cols="50" spellcheck="false"></textarea></td>
               <td><button type="button" onClick="clear_by_id('ro-arbitrary_json');"><i class="far fa-trash-alt"></i></td>
             </tr>
           </table>
         </div>
         <footer class="card-footer">
-          <a class="card-footer-item" onClick="modal_payload_request_object_apply();">Apply</a>
-          <a class="card-footer-item" onClick="modal_payload_request_object_close();">Close</a>
-          <a class="card-footer-item" onClick="modal_payload_request_object_apply_and_close();">Apply & Close</a>
+          <a class="card-footer-item" onClick="modal_payload_request_object_apply();">適用する</a>
+          <a class="card-footer-item" onClick="modal_payload_request_object_close();">閉じる</a>
+          <a class="card-footer-item" onClick="modal_payload_request_object_apply_and_close();">適用して閉じる</a>
         </footer>
       </div>
     </div>
@@ -254,7 +254,7 @@
     <div class="modal-content">
       <div class="card">
         <header class="card-header">
-          <p class="card-header-title">Payload for CIBA</p>
+          <p class="card-header-title">CIBA バックチャネル認証リクエストのペイロード</p>
           <a class="card-header-icon" aria-label="more options">
               <button class="delete" aria-label="close" onClick="close_modal('modal-payload-ciba');"></button>
           </a>
@@ -334,9 +334,9 @@
           </table>
         </div>
         <footer class="card-footer">
-          <a class="card-footer-item" onClick="modal_payload_ciba_apply();">Apply</a>
-          <a class="card-footer-item" onClick="modal_payload_ciba_close();">Close</a>
-          <a class="card-footer-item" onClick="modal_payload_ciba_apply_and_close();">Apply & Close</a>
+          <a class="card-footer-item" onClick="modal_payload_ciba_apply();">適用する</a>
+          <a class="card-footer-item" onClick="modal_payload_ciba_close();">閉じる</a>
+          <a class="card-footer-item" onClick="modal_payload_ciba_apply_and_close();">適用して閉じる</a>
         </footer>
       </div>
     </div>
@@ -348,7 +348,7 @@
         <li>
           このサービスは <a href="https://www.authlete.com/">株式会社 Authlete</a> により保証無しの無料サービスとして提供されています。
           なお、このサーバーは入力されたデータや鍵を一切記録しません。
-          このサーバー及びJOSE生成エンジンのソースコードは GitHub 上の <a href="https://github.com/authlete/mkjose">authlete/mkjose</a> 及び <a href="https://github.com/authlete/authlete-jose">authlete/authlete-jose</a> にて公開されています。
+          このサーバー及び JOSE 生成エンジンのソースコードは GitHub 上の <a href="https://github.com/authlete/mkjose">authlete/mkjose</a> 及び <a href="https://github.com/authlete/authlete-jose">authlete/authlete-jose</a> にて公開されています。
         </li>
       </ul>
     </div>
