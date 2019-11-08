@@ -153,173 +153,193 @@
   <div class="modal" id="modal-payload-request-object">
     <div class="modal-background" onClick="close_modal('modal-payload-request-object');"></div>
     <div class="modal-content">
-      <table class="table">
-        <tr>
-          <td><code>exp</code></td>
-          <td><input id="ro-exp" type="datetime-local"></td>
-          <td><button type="button" onClick="clear_by_id('ro-exp');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>iss</code></td>
-          <td><input id="ro-iss" type="text" size="60"></td>
-          <td><button type="button" onClick="clear_by_id('ro-iss');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>aud</code></td>
-          <td><input id="ro-aud" type="text" size="60"></td>
-          <td><button type="button" onClick="clear_by_id('ro-aud');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>scope</code></td>
-          <td><input id="ro-scope" type="text" size="60"></td>
-          <td><button type="button" onClick="clear_by_id('ro-scope');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>response_type</code></td>
-          <td><input id="ro-response_type" type="text" size="60"></td>
-          <td><button type="button" onClick="clear_by_id('ro-response_type');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>client_id</code></td>
-          <td><input id="ro-client_id" type="text" size="60"></td>
-          <td><button type="button" onClick="clear_by_id('ro-client_id');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>redirect_uri</code></td>
-          <td><input id="ro-redirect_uri" type="text" size="60"></td>
-          <td><button type="button" onClick="clear_by_id('ro-redirect_uri');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>state</code></td>
-          <td><input id="ro-state" type="text" size="60"></td>
-          <td><button type="button" onClick="clear_by_id('ro-state');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>nonce</code></td>
-          <td><input id="ro-nonce" type="text" size="60"></td>
-          <td><button type="button" onClick="clear_by_id('ro-nonce');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>max_age</code></td>
-          <td><input id="ro-max_age" type="number" size="60"></td>
-          <td><button type="button" onClick="clear_by_id('ro-max_age');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>code_challenge</code></td>
-          <td><input id="ro-code_challenge" type="text" size="60"></td>
-          <td><button type="button" onClick="clear_by_id('ro-code_challenge');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>code_challenge_method</code></td>
-          <td>
-            <select id="ro-code_challenge_method">
-              <option value="">Select</option>
-              <option value="plain"><code>plain</code></option>
-              <option value="S256"><code>S256</code></option>
-            </select>
-          </td>
-          <td><button type="button" onClick="clear_by_id('ro-code_challenge_method');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td><code>claims</code></td>
-          <td><textarea id="ro-claims" rows="5" cols="50" spellcheck="false"></textarea></td>
-          <td><button type="button" onClick="clear_by_id('ro-claims');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-        <tr>
-          <td>Arbitrary JSON</td>
-          <td><textarea id="ro-arbitrary_json" rows="5" cols="50" spellcheck="false"></textarea></td>
-          <td><button type="button" onClick="clear_by_id('ro-arbitrary_json');"><i class="far fa-trash-alt"></i></td>
-        </tr>
-      </table>
-
-      <button type="button" onClick="modal_payload_request_object_apply();">Apply</button>
-      <button type="button" onClick="modal_payload_request_object_close();">Close</button>
-      <button type="button" onClick="modal_payload_request_object_apply_and_close();">Apply & Close</button>
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">Payload for Request Object</p>
+          <a class="card-header-icon" aria-label="more options">
+              <button class="delete" aria-label="close" onClick="close_modal('modal-payload-request-object');"></button>
+          </a>
+        </header>
+        <div class="card-content">
+          <table class="table">
+            <tr>
+              <td><code>exp</code></td>
+              <td><input id="ro-exp" type="datetime-local"></td>
+              <td><button type="button" onClick="clear_by_id('ro-exp');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>iss</code></td>
+              <td><input id="ro-iss" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ro-iss');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>aud</code></td>
+              <td><input id="ro-aud" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ro-aud');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>scope</code></td>
+              <td><input id="ro-scope" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ro-scope');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>response_type</code></td>
+              <td><input id="ro-response_type" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ro-response_type');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>client_id</code></td>
+              <td><input id="ro-client_id" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ro-client_id');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>redirect_uri</code></td>
+              <td><input id="ro-redirect_uri" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ro-redirect_uri');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>state</code></td>
+              <td><input id="ro-state" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ro-state');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>nonce</code></td>
+              <td><input id="ro-nonce" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ro-nonce');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>max_age</code></td>
+              <td><input id="ro-max_age" type="number" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ro-max_age');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>code_challenge</code></td>
+              <td><input id="ro-code_challenge" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ro-code_challenge');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>code_challenge_method</code></td>
+              <td>
+                <select id="ro-code_challenge_method">
+                  <option value="">Select</option>
+                  <option value="plain"><code>plain</code></option>
+                  <option value="S256"><code>S256</code></option>
+                </select>
+              </td>
+              <td><button type="button" onClick="clear_by_id('ro-code_challenge_method');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>claims</code></td>
+              <td><textarea id="ro-claims" rows="5" cols="50" spellcheck="false"></textarea></td>
+              <td><button type="button" onClick="clear_by_id('ro-claims');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td>Arbitrary JSON</td>
+              <td><textarea id="ro-arbitrary_json" rows="5" cols="50" spellcheck="false"></textarea></td>
+              <td><button type="button" onClick="clear_by_id('ro-arbitrary_json');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+          </table>
+        </div>
+        <footer class="card-footer">
+          <a class="card-footer-item" onClick="modal_payload_request_object_apply();">Apply</a>
+          <a class="card-footer-item" onClick="modal_payload_request_object_close();">Close</a>
+          <a class="card-footer-item" onClick="modal_payload_request_object_apply_and_close();">Apply & Close</a>
+        </footer>
+      </div>
     </div>
-    <button class="modal-close is-large" aria-label="close" onClick="close_modal('modal-payload-request-object');"></button>
   </div>
 
   <div class="modal" id="modal-payload-ciba">
     <div class="modal-background" onClick="close_modal('modal-payload-ciba');"></div>
     <div class="modal-content">
-        <table class="table">
-          <tr>
-            <td><code>exp</code></td>
-            <td><input id="ciba-exp" type="datetime-local"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-exp');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>nbf</code></td>
-            <td><input id="ciba-nbf" type="datetime-local"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-nbf');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>iss</code></td>
-            <td><input id="ciba-iss" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-iss');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>aud</code></td>
-            <td><input id="ciba-aud" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-aud');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>scope</code></td>
-            <td><input id="ciba-scope" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-scope');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>client_notification_token</code></td>
-            <td><input id="ciba-client_notification_token" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-client_notification_token');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>acr_values</code></td>
-            <td><input id="ciba-acr_values" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-acr_values');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>login_hint_token</code></td>
-            <td><input id="ciba-login_hint_token" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-login_hint_token');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>id_token_hint</code></td>
-            <td><input id="ciba-id_token_hint" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-id_token_hint');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>login_hint</code></td>
-            <td><input id="ciba-login_hint" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-login_hint');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>binding_message</code></td>
-            <td><input id="ciba-binding_message" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-binding_message');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>user_code</code></td>
-            <td><input id="ciba-user_code" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-user_code');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>requested_expiry</code></td>
-            <td><input id="ciba-requested_expiry" type="number" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-requested_expiry');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-          <tr>
-            <td><code>request_context</code></td>
-            <td><input id="ciba-request_context" type="text" size="60"></td>
-            <td><button type="button" onClick="clear_by_id('ciba-request_context');"><i class="far fa-trash-alt"></i></td>
-          </tr>
-        </table>
-
-        <button type="button" onClick="modal_payload_ciba_apply();">Apply</button>
-        <button type="button" onClick="modal_payload_ciba_close();">Close</button>
-        <button type="button" onClick="modal_payload_ciba_apply_and_close();">Apply & Close</button>
+      <div class="card">
+        <header class="card-header">
+          <p class="card-header-title">Payload for CIBA</p>
+          <a class="card-header-icon" aria-label="more options">
+              <button class="delete" aria-label="close" onClick="close_modal('modal-payload-ciba');"></button>
+          </a>
+        </header>
+        <div class="card-content">
+          <table class="table">
+            <tr>
+              <td><code>exp</code></td>
+              <td><input id="ciba-exp" type="datetime-local"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-exp');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>nbf</code></td>
+              <td><input id="ciba-nbf" type="datetime-local"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-nbf');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>iss</code></td>
+              <td><input id="ciba-iss" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-iss');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>aud</code></td>
+              <td><input id="ciba-aud" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-aud');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>scope</code></td>
+              <td><input id="ciba-scope" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-scope');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>client_notification_token</code></td>
+              <td><input id="ciba-client_notification_token" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-client_notification_token');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>acr_values</code></td>
+              <td><input id="ciba-acr_values" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-acr_values');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>login_hint_token</code></td>
+              <td><input id="ciba-login_hint_token" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-login_hint_token');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>id_token_hint</code></td>
+              <td><input id="ciba-id_token_hint" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-id_token_hint');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>login_hint</code></td>
+              <td><input id="ciba-login_hint" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-login_hint');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>binding_message</code></td>
+              <td><input id="ciba-binding_message" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-binding_message');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>user_code</code></td>
+              <td><input id="ciba-user_code" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-user_code');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>requested_expiry</code></td>
+              <td><input id="ciba-requested_expiry" type="number" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-requested_expiry');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+            <tr>
+              <td><code>request_context</code></td>
+              <td><input id="ciba-request_context" type="text" size="60"></td>
+              <td><button type="button" onClick="clear_by_id('ciba-request_context');"><i class="far fa-trash-alt"></i></td>
+            </tr>
+          </table>
+        </div>
+        <footer class="card-footer">
+          <a class="card-footer-item" onClick="modal_payload_ciba_apply();">Apply</a>
+          <a class="card-footer-item" onClick="modal_payload_ciba_close();">Close</a>
+          <a class="card-footer-item" onClick="modal_payload_ciba_apply_and_close();">Apply & Close</a>
+        </footer>
+      </div>
     </div>
-    <button class="modal-close is-large" aria-label="close" onClick="close_modal('modal-payload-ciba');"></button>
   </div>
 
   <footer class="footer">
