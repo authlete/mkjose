@@ -101,16 +101,15 @@
             <div class="level-item">
               <div class="field">
                 <a class="button is-light" onClick="signing_alg_rsa();">RSA</a>
-              </div>
-            </div>
-            <div class="level-item">
-              <div class=field>
                 <a class="button is-light" onClick="signing_alg_ec();">EC</a>
+                <a class="button is-light" onClick="signing_alg_oct('Input the shared key');">oct</a>
               </div>
             </div>
             <div class="level-item">
-              <div class=field>
-                <a class="button is-light" onClick="signing_alg_oct('Input the shared key');">oct</a>
+              <div class="field">
+                <a class="button is-light" onClick="signing_alg_mkjwk('RSA');">Generate RSA</a>
+                <a class="button is-light" onClick="signing_alg_mkjwk('EC');">Generate EC</a>
+                <a class="button is-light" onClick="signing_alg_mkjwk('oct');">Generate oct</a>
               </div>
             </div>
             <div class="level-item">

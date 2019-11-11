@@ -101,16 +101,15 @@
             <div class="level-item">
               <div class="field">
                 <a class="button is-light" onClick="signing_alg_rsa();">RSA</a>
-              </div>
-            </div>
-            <div class="level-item">
-              <div class=field>
                 <a class="button is-light" onClick="signing_alg_ec();">EC</a>
+                <a class="button is-light" onClick="signing_alg_oct('共有鍵を入力してください');">oct</a>
               </div>
             </div>
             <div class="level-item">
-              <div class=field>
-                <a class="button is-light" onClick="signing_alg_oct('共有鍵を入力してください');">oct</a>
+              <div class="field">
+                <a class="button is-light" onClick="signing_alg_mkjwk('RSA');">RSA 自動生成</a>
+                <a class="button is-light" onClick="signing_alg_mkjwk('EC');">EC 自動生成</a>
+                <a class="button is-light" onClick="signing_alg_mkjwk('oct');">oct 自動生成</a>
               </div>
             </div>
             <div class="level-item">

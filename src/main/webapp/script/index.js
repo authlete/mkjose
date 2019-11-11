@@ -258,6 +258,31 @@ function signing_alg_clear() {
   signing_alg_set(0 /*none*/, '');
 }
 
+function signing_alg_mkjwk(kty) {
+	var url = 'https://mkjwk.org/jwk/';
+	var alg = 0; /*none*/
+	if (kty === 'RSA') {
+		url = url + 'rsa?size=2048';
+		alg = 4; /*RS256*/
+	} else if (kty === 'EC') {
+		url = url + 'ec?crv=P-256';
+		alg = 7; /*ES256*/
+	} else if (kty === 'oct') {
+		url = url + 'oct?size=2048';
+		alg = 1; /*HS256*/
+	} else {
+		return;
+	}
+
+	fetch(url).then(function (res) {
+		if (res.ok) {
+			res.json().then(function (data) {
+				signing_alg_set(alg, JSON.stringify(data.jwk, null, 4));
+			});
+		}
+	});
+}
+
 function signing_alg_rsa() {
   var jwk =
     '{\n' +
