@@ -6,28 +6,37 @@
   <meta name="Description" content="mkjose offers a mechanism to generate JOSE, JSON Object Signing and Encryption, from a given payload and JWK easily.">
   <title>mkjose</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+	<link rel="stylesheet" href="https://unpkg.com/bulmaswatch/superhero/bulmaswatch.min.css">
+	<script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
   <link rel="stylesheet" type="text/css" href="css/index.css">
-  <script src="script/index.js"></script>
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 <body class="font-default">
 
-  <section class="hero is-dark">
-    <div class="hero-body">
-      <div class="container">
-        <div id="language-switch" class="is-pulled-right">
-          English |
-          <a href="index.ja.html">日本語</a>
-        </div>
-        <h1 class="title is-size-1">
-          mkjose
-        </h1>
-        <h3 class="subtitle">
-          simple JOSE generator
-        </h3>
-      </div>
-    </div>
-  </section>
+	<nav class="navbar" role="navigation" aria-label="main navigation">
+		<div class="navbar-brand">
+			<h1 class="title is-size-1 navbar-item">
+	          mkjose
+	        </h1>
+	        <h3 class="subtitle is-size-3 navbar-item">
+			  simple JOSE generator
+	        </h3>
+		</div>
+		<div class="navbar-menu">
+			<div class="navbar-end">
+	        <div id="language-switch" class="navbar-item">
+	          English |
+	          <a href="index.ja.html">日本語</a>
+			</div>
+	        </div>
+		</div>
+	</nav>
+
+<div id="react"></div>
+
+
+<hr />
+<hr />
 
   <section class="section">
     <div class="container">
@@ -353,6 +362,8 @@
       </ul>
     </div>
   </footer>
+
+	<script src="/built/bundle.js"></script>
 
 </body>
 </html>
