@@ -199,11 +199,24 @@ class RequestObjectPayload extends React.Component {
 			claims = JSON.stringify(p.claims, null, 4);
 		}
 
-		console.log('Here');
+		var arb = {};
+		var arbString = '';
+		Object.keys(p).forEach((field) => {
+			console.log(field);
+			if (field != 'claims' 
+				&& Object.keys(this.fieldTypes).indexOf(field) < 0) {
+				arb[field] = p[field];
+			}
+		});
+		console.log(arb);
+		if (Object.keys(arb).length > 0) {
+			arbString = JSON.stringify(arb, null, 4);
+		}
 		
 		this.state = {
 			payload: p,
-			claimsString: claims
+			claimsString: claims,
+			arbString: arbString
 		};
 	}
 
@@ -274,6 +287,33 @@ class RequestObjectPayload extends React.Component {
 		
 	}
 	
+	setArbitrary = (e) => {
+		const val = e.target.value;
+
+		var p = this.state.payload;
+
+		// try to parse as json
+		var arb = undefined;
+		try {
+			arb = JSON.parse(val);	
+
+			Object.keys(arb).forEach((field) => {
+				p[field] = arb[field];
+			});
+
+			this.props.setPayload(JSON.stringify(p, null, 4));
+			
+		} catch (e) {
+			// non-json payload, ignore the update
+		}
+		
+		this.setState({
+			payload: p,
+			arbString: val
+		});
+		
+	}
+	
 	render() {
 		const fields = [];
 		Object.keys(this.fieldTypes).forEach((field) => {
@@ -297,6 +337,12 @@ class RequestObjectPayload extends React.Component {
 								<td><code>claims</code></td>
 								<td><textarea id="ro-claims" rows="5" cols="50" spellCheck="false"
 									onChange={this.setClaims} value={this.state.claimsString}></textarea></td>
+								<td><Button><i className="far fa-trash-alt"></i></Button></td>
+							</tr>
+							<tr>
+								<td>Arbitrary JSON</td>
+								<td><textarea id="ro-arbitrary_json" rows="5" cols="50" spellCheck="false"
+									onChange={this.setArbitrary} value={this.state.arbString}></textarea></td>
 								<td><Button><i className="far fa-trash-alt"></i></Button></td>
 							</tr>
 						</tbody>
