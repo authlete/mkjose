@@ -9,8 +9,9 @@ class MkJose extends React.Component {
 		this.state = {
 			payload: '',
 			alg: 'none',
-			key: {},
-			payloadMode: 'plain'   // can also be 'ciba' or 'ro'
+			jwk: '',
+			payloadMode: 'plain',   // can also be 'ciba' or 'ro'
+			output: ''
 		};
 	}
 	
@@ -28,24 +29,80 @@ class MkJose extends React.Component {
 		this.setState({payloadMode: payloadMode});
 	}
 	
-	setAlg = (e) => {
-		this.setState({alg: e.target.value});
+	setAlgEvt = (e) => {
+		this.setAlgVal(e.target.value);
+	}
+	
+	setAlgVal = (val) => {
+		this.setState({alg: val});
+	}
+	
+	setKey = (val) => {
+		this.setState({
+			jwk: val
+		});
+	}
+	
+	clearKey = () => {
+		this.setKey('');
+		this.setAlgVal('none');
+	}
+	
+	generate = (e) => {
+		if (!this.state.payload) {
+			alert('Input payload.');
+			return;
+		}
+		
+		if (this.state.alg != 'none' && !this.state.jwk) {
+			alert('Input JWK for signing.');
+		}
+		
+		const url = location.origin + '/api/jose/generate';
+		const headers = new Headers({
+			"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
+		});
+		
+		const body = new URLSearchParams();
+		body.append('payload', this.state.payload);
+		body.append('signing-alg', this.state.alg);
+		body.append('jwk-signing-alg', this.state.jwk);
+		
+		fetch(new Request(url, {
+			method: 'POST',
+			headers: headers,
+			body: body
+		})).then((res) => {
+			res.text().then((jose) => {
+				this.setState({output: jose});
+			});
+		});
+		
+	}
+	
+	copyToClipboard = () => {
+		navigator.clipboard.writeText(this.state.output);
 	}
 	
 	render() {
 		return (
+		<>
 			<Section>
 				<Container>
 					<InputForm payload={this.state.payload} payloadMode={this.state.payloadMode} 
 						setPayload={this.setPayload} selectTab={this.selectTab} clearPayload={this.clearPayload} />
-					<SigningAlg alg={this.state.alg} setAlg={this.setAlg} />
-					<SigningKey key={this.state.key} 
-						setKey={this.setKey} setAlg={this.setAlg} getStaticKey={this.setStaticKey} generateNewKey={this.generateNewKey} />
-				</Container>
-				<Container>
-					<OutputForm />
+					<SigningAlg alg={this.state.alg} setAlg={this.setAlgEvt} />
+					<SigningKey jwk={this.state.jwk} 
+						setKey={this.setKey} setAlg={this.setAlgVal} clearKey={this.clearKey} />
+					<GenerateButton generate={this.generate} />
 				</Container>
 			</Section>
+			<Section>
+				<Container>
+					<OutputForm output={this.state.output} copyToClipboard={this.copyToClipboard} />
+				</Container>
+			</Section>
+		</>
 		);
 	}
 }
@@ -110,7 +167,7 @@ class PlainPayload extends React.Component {
 	
 	render() {
 		return (
-			<Form.Textarea className="textarea" rows={10} spellCheck={false} 
+			<Form.Textarea rows={10} spellCheck={false} 
 				value={this.props.payload} onChange={this.setPayload} />
 		);
 	}
@@ -228,13 +285,11 @@ class RequestObjectPayload extends React.Component {
 		var arb = {};
 		var arbString = '';
 		Object.keys(p).forEach((field) => {
-			console.log(field);
 			if (field != 'claims' 
 				&& Object.keys(this.fieldTypes).indexOf(field) < 0) {
 				arb[field] = p[field];
 			}
 		});
-		console.log(arb);
 		if (Object.keys(arb).length > 0) {
 			arbString = JSON.stringify(arb, null, 4);
 		}
@@ -413,14 +468,14 @@ class RequestObjectPayload extends React.Component {
 							{fields}
 							<tr>
 								<td><code>claims</code></td>
-								<td><textarea id="ro-claims" rows="5" cols="50" spellCheck="false"
-									onChange={this.setClaims} value={this.state.claimsString}></textarea></td>
+								<td><Form.Textarea id="ro-claims" rows={5} cols={50} spellCheck="false"
+									onChange={this.setClaims} value={this.state.claimsString} /></td>
 								<td><Button onClick={this.clearClaims}><i className="far fa-trash-alt"></i></Button></td>
 							</tr>
 							<tr>
 								<td>Arbitrary JSON</td>
-								<td><textarea id="ro-arbitrary_json" rows="5" cols="50" spellCheck="false"
-									onChange={this.setArbitrary} value={this.state.arbString}></textarea></td>
+								<td><Form.Textarea id="ro-arbitrary_json" rows={5} cols={50} spellCheck="false"
+									onChange={this.setArbitrary} value={this.state.arbString} /></td>
 								<td><Button onClick={this.clearArbitrary}><i className="far fa-trash-alt"></i></Button></td>
 							</tr>
 						</tbody>
@@ -456,14 +511,161 @@ const SigningAlg = ({...props}) => {
 	);
 }
 
-const SigningKey = ({...props}) => {
+class SigningKey extends React.Component {
+	constructor(props) {
+		super(props);
+		
+		this.state = {
+			keyGen: 'preset' // can also be 'generate'
+		};
+	}
+	
+	selectTab = (val) => () => {
+		this.setState({keyGen: val});
+	}
+	
+	setKey = (e) => {
+		this.props.setKey(e.target.value);
+	}
+	
+	genKey = (kty) => (e) => {
+		if (this.state.keyGen == 'preset') {
+			var k = this.loadPresetKey(kty);
+			this.props.setKey(JSON.stringify(k, null, 4));
+			this.setAlgForKty(kty);
+		} else {
+			this.callMkJwk(kty);
+		}
+	}
+	
+	setAlgForKty = (kty) => {
+		if (kty == 'RSA') {
+			this.props.setAlg('RS256');
+		} else if (kty == 'EC') {
+			this.props.setAlg('ES256');
+		} else if (kty == 'oct') {
+			this.props.setAlg('HS256');
+		}
+	}
+	
+	loadPresetKey = (kty) => {
+		if (kty == 'RSA') {
+			return {
+			  "kty":"RSA",
+			  "n":"ofgWCuLjybRlzo0tZWJjNiuSfb4p4fAkd_wWJcyQoTbji9k0l8W26mPddxHmfHQp-Vaw-4qPCJrcS2mJPMEzP1Pt0Bm4d4QlL-yRT-SFd2lZS-pCgNMsD1W_YpRPEwOWvG6b32690r2jZ47soMZo9wGzjb_7OMg0LOL-bSf63kpaSHSXndS5z5rexMdbBYUsLA9e-KXBdQOS-UTo7WTBEMa2R2CapHg665xsmtdVMTBQY4uDZlxvb3qCo5ZwKh9kG4LT6_I5IhlJH7aGhyxXFvUK-DWNmoudF8NAco9_h9iaGNj8q2ethFkMLs91kzk2PAcDTW9gb54h4FRWyuXpoQ",
+			  "e":"AQAB",
+			  "d":"Eq5xpGnNCivDflJsRQBXHx1hdR1k6Ulwe2JZD50LpXyWPEAeP88vLNO97IjlA7_GQ5sLKMgvfTeXZx9SE-7YwVol2NXOoAJe46sui395IW_GO-pWJ1O0BkTGoVEn2bKVRUCgu-GjBVaYLU6f3l9kJfFNS3E0QbVdxzubSu3Mkqzjkn439X0M_V51gfpRLI9JYanrC4D4qAdGcopV_0ZHHzQlBjudU2QvXt4ehNYTCBr6XCLQUShb1juUO1ZdiYoFaFQT5Tw8bGUl_x_jTj3ccPDVZFD9pIuhLhBOneufuBiB4cS98l2SR_RQyGWSeWjnczT0QU91p1DhOVRuOopznQ",
+			  "p":"4BzEEOtIpmVdVEZNCqS7baC4crd0pqnRH_5IB3jw3bcxGn6QLvnEtfdUdiYrqBdss1l58BQ3KhooKeQTa9AB0Hw_Py5PJdTJNPY8cQn7ouZ2KKDcmnPGBY5t7yLc1QlQ5xHdwW1VhvKn-nXqhJTBgIPgtldC-KDV5z-y2XDwGUc",
+			  "q":"uQPEfgmVtjL0Uyyx88GZFF1fOunH3-7cepKmtH4pxhtCoHqpWmT8YAmZxaewHgHAjLYsp1ZSe7zFYHj7C6ul7TjeLQeZD_YwD66t62wDmpe_HlB-TnBA-njbglfIsRLtXlnDzQkv5dTltRJ11BKBBypeeF6689rjcJIDEz9RWdc",
+			  "dp":"BwKfV3Akq5_MFZDFZCnW-wzl-CCo83WoZvnLQwCTeDv8uzluRSnm71I3QCLdhrqE2e9YkxvuxdBfpT_PI7Yz-FOKnu1R6HsJeDCjn12Sk3vmAktV2zb34MCdy7cpdTh_YVr7tss2u6vneTwrA86rZtu5Mbr1C1XsmvkxHQAdYo0",
+			  "dq":"h_96-mK1R_7glhsum81dZxjTnYynPbZpHziZjeeHcXYsXaaMwkOlODsWa7I9xXDoRwbKgB719rrmI2oKr6N3Do9U0ajaHF-NKJnwgjMd2w9cjz3_-kyNlxAr2v4IKhGNpmM5iIgOS1VZnOZ68m6_pbLBSp3nssTdlqvd0tIiTHU",
+			  "qi":"IYd7DHOhrWvxkwPQsRM2tOgrjbcrfvtQJipd-DlcxyVuuM9sQLdgjVk2oy26F0EmpScGLq2MowX7fhd_QJQ3ydy5cY7YIBi87w93IKLEdfnbJtoOPLUW0ITrJReOgo1cq9SbsxYawBgfp_gh6A5603k2-ZQwVK0JKSHuLFkuQ3U"
+			};
+		} else if (kty == 'EC') {
+			return {
+			  "kty":"EC",
+			  "crv":"P-256",
+			  "x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+			  "y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
+			  "d":"jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI"
+			};
+		} else if (kty == 'oct') {
+			return {
+			  "kty":"oct",
+			  "k":"dGhpcyBpcyBhIHNlY3JldCBrZXk"
+			};
+		}
+	}
+	
+	callMkJwk = (kty) => {
+		var url = 'https://mkjwk.org/jwk/';
+		if (kty === 'RSA') {
+			url = url + 'rsa?size=2048';
+		} else if (kty === 'EC') {
+			url = url + 'ec?crv=P-256';
+		} else if (kty === 'oct') {
+			url = url + 'oct?size=2048';
+		} else {
+			return;
+		}
+		
+		const _self = this;
+
+		fetch(url).then(function (res) {
+			if (res.ok) {
+				res.json().then(function (data) {
+					_self.props.setKey(JSON.stringify(data.jwk, null, 4));
+					_self.setAlgForKty(kty);
+				});
+			}
+		});
+	}
+	
+	
+	render() {
+		return (
+		<>
+			<Level>
+				<Level.Side align="left">
+					<Level.Item>
+						<Form.Field>
+							<Form.Label className="is-medium">Signing Key</Form.Label>
+						</Form.Field>
+					</Level.Item>
+				</Level.Side>
+				<Level.Side align="right">
+					<Level.Item>
+						<Tabs type='toggle-rounded' color='primary'>
+							<Tabs.Tab active={this.state.keyGen == 'preset'} onClick={this.selectTab('preset')}>
+							Preset
+							</Tabs.Tab>
+							<Tabs.Tab active={this.state.keyGen == 'generate'} onClick={this.selectTab('generate')}>
+							Generate
+							</Tabs.Tab>
+						</Tabs>
+					</Level.Item>
+					<Level.Item>
+						<Button onClick={this.genKey('RSA')}>RSA</Button>
+						<Button onClick={this.genKey('EC')}>EC</Button>
+						<Button onClick={this.genKey('oct')}>oct</Button>
+					</Level.Item>
+					<Level.Item>
+						<Button onClick={this.props.clearKey}><i className="far fa-trash-alt"></i></Button>
+					</Level.Item>
+				</Level.Side>
+			</Level>			
+			<Form.Field>
+				<Form.Control>
+					<Form.Textarea rows={10} spellCheck={false} onChange={this.setKey} value={this.props.jwk} />
+				</Form.Control>
+			</Form.Field>
+		</>
+		);
+	}
+}
+
+const GenerateButton = ({...props}) => {
 	return (
-null
+		<Form.Field>
+			<Form.Control>
+				<Button size="large" color="primary" fullwidth onClick={props.generate}>Generate</Button>
+			</Form.Control>
+		</Form.Field>
 	);
 }
 
 const OutputForm = ({...props}) => {
-	return null;
+	return (
+	<>
+		<Form.Field>
+			<Form.Label className="is-medium">Output</Form.Label>
+			<Form.Textarea rows={10} spellCheck={false} readOnly value={props.output} />
+		</Form.Field>
+		<Form.Control>
+			<Button size="large" color="primary" fullwidth onClick={props.copyToClipboard}>Copy to Clipboard</Button>
+		</Form.Control>
+	</>
+	);
 }
 
 ReactDOM.render((
