@@ -28,7 +28,10 @@ class MkJose extends React.Component {
 		return (
 			<Section>
 				<Container>
-					<InputForm payload={this.state.payload} payloadMode={this.state.payloadMode} setPayload={this.setPayload} selectTab={this.selectTab} />
+					<InputForm payload={this.state.payload} payloadMode={this.state.payloadMode} 
+						setPayload={this.setPayload} selectTab={this.selectTab} />
+					<SigningKey key={this.state.key} alg={this.state.alg} 
+						setKey={this.setKey} setAlg={this.setAlg} getStaticKey={this.setStaticKey} generateNewKey={this.generateNewKey} />
 				</Container>
 				<Container>
 					<OutputForm />
@@ -53,7 +56,7 @@ const InputForm = ({...props}) => {
 			setPayload={props.setPayload} />;
 	}
 	return (
-		<div>
+		<>
 			<Level className="is-mobile">
 				<Level.Side align="left">
 					<Level.Item>
@@ -84,8 +87,7 @@ const InputForm = ({...props}) => {
 					{payload}
 				</Form.Control>
 			</Form.Field>
-		
-		</div>			
+		</>			
 	);
 }
 
@@ -155,6 +157,18 @@ class CibaPayload extends React.Component {
 		});
 	}
 	
+	clearPayloadItem = (field) => (e) => {
+		var p = this.state.payload;
+
+		p[field] = undefined;
+		
+		this.props.setPayload(JSON.stringify(p, null, 4));
+		
+		this.setState({
+			payload: p
+		});
+	}
+	
 	render() {
 		const fields = [];
 		Object.keys(this.fieldTypes).forEach((field) => {
@@ -163,7 +177,7 @@ class CibaPayload extends React.Component {
 					<td><code>{field}</code></td>
 					<td><input id={'ciba-' + field} type={this.fieldTypes[field]} size={60} 
 						onChange={this.setPayloadItem(field)} value={this.state.payload[field] || ''} /></td>
-					<td><Button><i className="far fa-trash-alt"></i></Button></td>
+					<td><Button onClick={this.clearPayloadItem(field)}><i className="far fa-trash-alt"></i></Button></td>
 				</tr>
 			);
 		});
@@ -254,13 +268,25 @@ class RequestObjectPayload extends React.Component {
 		});
 	}
 	
+	clearPayloadItem = (field) => (e) => {
+		var p = this.state.payload;
+
+		p[field] = undefined;
+		
+		this.props.setPayload(JSON.stringify(p, null, 4));
+		
+		this.setState({
+			payload: p
+		});
+	}
+	
 	setClaims = (e) => {
 		const val = e.target.value;
 
 		var p = this.state.payload;
 
 		if (!val) {
-			p['claims'] = c;
+			p['claims'] = undefined;
 
 			this.props.setPayload(JSON.stringify(p, null, 4));
 			
@@ -287,20 +313,42 @@ class RequestObjectPayload extends React.Component {
 		
 	}
 	
+	clearClaims = (e) => {
+		const p = this.state.payload;
+		p['claims'] = undefined;
+
+		this.props.setPayload(JSON.stringify(p, null, 4));
+		
+		this.setState({
+			payload: p,
+			claimsString: ''
+		});
+	}
+	
 	setArbitrary = (e) => {
 		const val = e.target.value;
 
-		var p = this.state.payload;
+		var p = {};
 
 		// try to parse as json
 		var arb = undefined;
 		try {
-			arb = JSON.parse(val);	
-
-			Object.keys(arb).forEach((field) => {
-				p[field] = arb[field];
+			// copy over standard fields first
+			Object.keys(this.fieldTypes).forEach((field) => {
+				p[field] = this.state.payload[field];
 			});
+			// handle 'claims' separately
+			p['claims'] = this.state.payload['claims'];
 
+			// if there are new fields, copy them over
+			if (val) {
+				arb = JSON.parse(val);	
+
+				Object.keys(arb).forEach((field) => {
+					p[field] = arb[field];
+				});
+			}
+			
 			this.props.setPayload(JSON.stringify(p, null, 4));
 			
 		} catch (e) {
@@ -314,6 +362,24 @@ class RequestObjectPayload extends React.Component {
 		
 	}
 	
+	clearArbitrary = (e) => {
+		var p = {};
+		// copy over standard fields first
+		Object.keys(this.fieldTypes).forEach((field) => {
+			p[field] = this.state.payload[field];
+		});
+		// handle 'claims' separately
+		p['claims'] = this.state.payload['claims'];
+		
+		this.props.setPayload(JSON.stringify(p, null, 4));
+
+		this.setState({
+			payload: p,
+			arbString: ''
+		});
+
+	}
+	
 	render() {
 		const fields = [];
 		Object.keys(this.fieldTypes).forEach((field) => {
@@ -322,7 +388,7 @@ class RequestObjectPayload extends React.Component {
 					<td><code>{field}</code></td>
 					<td><input id={'ro-' + field} type={this.fieldTypes[field]} size={60} 
 						onChange={this.setPayloadItem(field)} value={this.state.payload[field] || ''} /></td>
-					<td><Button><i className="far fa-trash-alt"></i></Button></td>
+					<td><Button onClick={this.clearPayloadItem(field)}><i className="far fa-trash-alt"></i></Button></td>
 				</tr>
 			);
 		});
@@ -337,13 +403,13 @@ class RequestObjectPayload extends React.Component {
 								<td><code>claims</code></td>
 								<td><textarea id="ro-claims" rows="5" cols="50" spellCheck="false"
 									onChange={this.setClaims} value={this.state.claimsString}></textarea></td>
-								<td><Button><i className="far fa-trash-alt"></i></Button></td>
+								<td><Button onClick={this.clearClaims}><i className="far fa-trash-alt"></i></Button></td>
 							</tr>
 							<tr>
 								<td>Arbitrary JSON</td>
 								<td><textarea id="ro-arbitrary_json" rows="5" cols="50" spellCheck="false"
 									onChange={this.setArbitrary} value={this.state.arbString}></textarea></td>
-								<td><Button><i className="far fa-trash-alt"></i></Button></td>
+								<td><Button onClick={this.clearArbitrary}><i className="far fa-trash-alt"></i></Button></td>
 							</tr>
 						</tbody>
 					</Table>
@@ -353,18 +419,8 @@ class RequestObjectPayload extends React.Component {
 	}
 }
 
-const PayloadInput = ({...props}) => {
-	if (props.mode == 'plain') {
-		return (
-			<Form.Textarea className="textarea" rows={10} spellCheck={false} value={props.payload} onChange={props.setPayload} />
-		);
-	} else if (props.mode == 'ro') {
-		return null;
-	} else if (props.mode == 'ciba') {
-		return null
-	} else {
-		return null;
-	}
+const SigningKey = ({...props}) => {
+	return null;
 }
 
 const OutputForm = ({...props}) => {
