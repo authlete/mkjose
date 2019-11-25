@@ -20,6 +20,10 @@ class MkJose extends React.Component {
 		});
 	}
 	
+	clearPayload = () => {
+		this.setPayload('');
+	}
+	
 	selectTab = (payloadMode) => () => {
 		this.setState({payloadMode: payloadMode});
 	}
@@ -33,7 +37,7 @@ class MkJose extends React.Component {
 			<Section>
 				<Container>
 					<InputForm payload={this.state.payload} payloadMode={this.state.payloadMode} 
-						setPayload={this.setPayload} selectTab={this.selectTab} />
+						setPayload={this.setPayload} selectTab={this.selectTab} clearPayload={this.clearPayload} />
 					<SigningAlg alg={this.state.alg} setAlg={this.setAlg} />
 					<SigningKey key={this.state.key} 
 						setKey={this.setKey} setAlg={this.setAlg} getStaticKey={this.setStaticKey} generateNewKey={this.generateNewKey} />
@@ -83,6 +87,9 @@ const InputForm = ({...props}) => {
 							Request Object
 							</Tabs.Tab>
 						</Tabs>
+					</Level.Item>
+					<Level.Item>
+						<Button onClick={props.clearPayload}><i className="far fa-trash-alt"></i></Button>
 					</Level.Item>
 				</Level.Side>
 			</Level>
