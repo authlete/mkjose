@@ -237,6 +237,14 @@ class CibaPayload extends React.Component {
 		};
 	}
 	
+	componentDidUpdate(prevProps) {
+		if (!!prevProps.payload && !this.props.payload) {
+			this.setState({
+				payload: {}
+			});
+		}
+	}
+	
 	fieldTypes = {
 		exp: 'datetime-local',
 		nbf: 'datetime-local',
@@ -347,6 +355,16 @@ class RequestObjectPayload extends React.Component {
 			claimsString: claims,
 			arbString: arbString
 		};
+	}
+	
+	componentDidUpdate(prevProps) {
+		if (!!prevProps.payload && !this.props.payload) {
+			this.setState({
+				payload: {},
+				claimsString: '',
+				arbString: ''
+			});
+		}
 	}
 
 	fieldTypes = {
