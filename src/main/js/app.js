@@ -10,7 +10,7 @@ class MkJose extends React.Component {
 			payload: '',
 			alg: 'none',
 			key: {},
-			payloadMode: 'ro'   // can also be 'ciba' or 'request'
+			payloadMode: 'plain'   // can also be 'ciba' or 'ro'
 		};
 	}
 	
@@ -24,13 +24,18 @@ class MkJose extends React.Component {
 		this.setState({payloadMode: payloadMode});
 	}
 	
+	setAlg = (e) => {
+		this.setState({alg: e.target.value});
+	}
+	
 	render() {
 		return (
 			<Section>
 				<Container>
 					<InputForm payload={this.state.payload} payloadMode={this.state.payloadMode} 
 						setPayload={this.setPayload} selectTab={this.selectTab} />
-					<SigningKey key={this.state.key} alg={this.state.alg} 
+					<SigningAlg alg={this.state.alg} setAlg={this.setAlg} />
+					<SigningKey key={this.state.key} 
 						setKey={this.setKey} setAlg={this.setAlg} getStaticKey={this.setStaticKey} generateNewKey={this.generateNewKey} />
 				</Container>
 				<Container>
@@ -419,8 +424,35 @@ class RequestObjectPayload extends React.Component {
 	}
 }
 
+const SigningAlg = ({...props}) => {
+	return (
+		<Form.Field>
+			<Form.Label className="is-medium">Signing Algorithm</Form.Label>
+			<Form.Control>
+				<Form.Select onChange={props.setAlg} value={props.alg || ''}>
+	                <option value="none">none</option>
+	                <option value="HS256">HS256 (HMAC using SHA-256)</option>
+	                <option value="HS384">HS384 (HMAC using SHA-384)</option>
+	                <option value="HS512">HS512 (HMAC using SHA-512)</option>
+	                <option value="RS256">RS256 (RSASSA-PKCS1-v1_5 using SHA-256)</option>
+	                <option value="RS384">RS384 (RSASSA-PKCS1-v1_5 using SHA-384)</option>
+	                <option value="RS512">RS512 (RSASSA-PKCS1-v1_5 using SHA-512)</option>
+	                <option value="ES256">ES256 (ECDSA using P-256 and SHA-256)</option>
+	                <option value="ES384">ES384 (ECDSA using P-384 and SHA-384)</option>
+	                <option value="ES512">ES512 (ECDSA using P-521 and SHA-512)</option>
+	                <option value="PS256">PS256 (RSASSA-PSS using SHA-256 and MGF1 with SHA-256)</option>
+	                <option value="PS256">PS384 (RSASSA-PSS using SHA-384 and MGF1 with SHA-384)</option>
+	                <option value="PS256">PS512 (RSASSA-PSS using SHA-512 and MGF1 with SHA-512)</option>
+				</Form.Select>
+			</Form.Control>
+		</Form.Field>
+	);
+}
+
 const SigningKey = ({...props}) => {
-	return null;
+	return (
+null
+	);
 }
 
 const OutputForm = ({...props}) => {
