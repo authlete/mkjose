@@ -11,7 +11,9 @@ class MkJose extends React.Component {
 			alg: 'none',
 			jwk: '',
 			payloadMode: 'plain',   // can also be 'ciba' or 'ro'
-			output: ''
+			output: '',
+			keyLoading: false,
+			joseLoading: false
 		};
 	}
 	
@@ -48,6 +50,47 @@ class MkJose extends React.Component {
 		this.setAlgVal('none');
 	}
 	
+	callMkJwk = (kty) => {
+		var url = 'https://mkjwk.org/jwk/';
+		if (kty === 'RSA') {
+			url = url + 'rsa?size=2048';
+		} else if (kty === 'EC') {
+			url = url + 'ec?crv=P-256';
+		} else if (kty === 'oct') {
+			url = url + 'oct?size=2048';
+		} else {
+			return;
+		}
+		
+		const _self = this;
+
+		this.setState({
+			keyLoading: true
+		});
+		
+		fetch(url).then(function (res) {
+			if (res.ok) {
+				res.json().then(function (data) {
+					_self.setState({
+						jwk: JSON.stringify(data.jwk, null, 4),
+						keyLoading: false
+					});
+					_self.setAlgForKty(kty);
+				});
+			}
+		});
+	}
+		
+	setAlgForKty = (kty) => {
+		if (kty == 'RSA') {
+			this.setAlgVal('RS256');
+		} else if (kty == 'EC') {
+			this.setAlgVal('ES256');
+		} else if (kty == 'oct') {
+			this.setAlgVal('HS256');
+		}
+	}
+	
 	generate = (e) => {
 		if (!this.state.payload) {
 			alert('Input payload.');
@@ -68,13 +111,18 @@ class MkJose extends React.Component {
 		body.append('signing-alg', this.state.alg);
 		body.append('jwk-signing-alg', this.state.jwk);
 		
+		this.setState({joseLoading: true});
+		
 		fetch(new Request(url, {
 			method: 'POST',
 			headers: headers,
 			body: body
 		})).then((res) => {
 			res.text().then((jose) => {
-				this.setState({output: jose});
+				this.setState({
+					output: jose,
+					joseLoading: false
+				});
 			});
 		});
 		
@@ -92,14 +140,14 @@ class MkJose extends React.Component {
 					<InputForm payload={this.state.payload} payloadMode={this.state.payloadMode} 
 						setPayload={this.setPayload} selectTab={this.selectTab} clearPayload={this.clearPayload} />
 					<SigningAlg alg={this.state.alg} setAlg={this.setAlgEvt} />
-					<SigningKey jwk={this.state.jwk} 
-						setKey={this.setKey} setAlg={this.setAlgVal} clearKey={this.clearKey} />
+					<SigningKey jwk={this.state.jwk} keyLoading={this.keyLoading}
+						setKey={this.setKey} setAlgForKty={this.setAlgForKty} clearKey={this.clearKey} callMkJwk={this.callMkJwk} />
 					<GenerateButton generate={this.generate} />
 				</Container>
 			</Section>
 			<Section>
 				<Container>
-					<OutputForm output={this.state.output} copyToClipboard={this.copyToClipboard} />
+					<OutputForm output={this.state.output} copyToClipboard={this.copyToClipboard} joseLoading={this.joseLoading} />
 				</Container>
 			</Section>
 		</>
@@ -532,19 +580,9 @@ class SigningKey extends React.Component {
 		if (this.state.keyGen == 'preset') {
 			var k = this.loadPresetKey(kty);
 			this.props.setKey(JSON.stringify(k, null, 4));
-			this.setAlgForKty(kty);
+			this.props.setAlgForKty(kty);
 		} else {
-			this.callMkJwk(kty);
-		}
-	}
-	
-	setAlgForKty = (kty) => {
-		if (kty == 'RSA') {
-			this.props.setAlg('RS256');
-		} else if (kty == 'EC') {
-			this.props.setAlg('ES256');
-		} else if (kty == 'oct') {
-			this.props.setAlg('HS256');
+			this.props.callMkJwk(kty);
 		}
 	}
 	
@@ -572,35 +610,10 @@ class SigningKey extends React.Component {
 		} else if (kty == 'oct') {
 			return {
 			  "kty":"oct",
-			  "k":"dGhpcyBpcyBhIHNlY3JldCBrZXk"
+			  "k":"cMjpBMzDsh92LJfxqOeIZ8d9K0-p7-1ppPQAArKLdZZtr6LrkOO_8VjjRJT3hWPB1rd5r8U3bPvZo9W_hnt1VLR14BamM1sjn6_64gTCdxUKD3pxsmM848-WxL-esBIKcy2z6Lp6FeXyhkLJP-yETife6lrIdr_HNHiqI3Sy0TJLfd-QOGMDAuHUAMYLAqinKPgS3UqgOOh1-3Uak4rhX4gT4KgO-olKamW0uCiLLCzSGofyc3qeHN0eOqVYVEQ2jKIv7QzWt7tbrRWLX7AKtgR30zsKUgnyMsmirNJygDv9HY-BSsTswQpDtswj6AG3HQAgzr4BKRhn6wOi6ymKDg"
 			};
 		}
 	}
-	
-	callMkJwk = (kty) => {
-		var url = 'https://mkjwk.org/jwk/';
-		if (kty === 'RSA') {
-			url = url + 'rsa?size=2048';
-		} else if (kty === 'EC') {
-			url = url + 'ec?crv=P-256';
-		} else if (kty === 'oct') {
-			url = url + 'oct?size=2048';
-		} else {
-			return;
-		}
-		
-		const _self = this;
-
-		fetch(url).then(function (res) {
-			if (res.ok) {
-				res.json().then(function (data) {
-					_self.props.setKey(JSON.stringify(data.jwk, null, 4));
-					_self.setAlgForKty(kty);
-				});
-			}
-		});
-	}
-	
 	
 	render() {
 		return (
@@ -635,7 +648,7 @@ class SigningKey extends React.Component {
 				</Level.Side>
 			</Level>			
 			<Form.Field>
-				<Form.Control>
+				<Form.Control loading={this.props.keyLoading}>
 					<Form.Textarea rows={10} spellCheck={false} onChange={this.setKey} value={this.props.jwk} />
 				</Form.Control>
 			</Form.Field>
@@ -659,7 +672,9 @@ const OutputForm = ({...props}) => {
 	<>
 		<Form.Field>
 			<Form.Label className="is-medium">Output</Form.Label>
-			<Form.Textarea rows={10} spellCheck={false} readOnly value={props.output} />
+			<Form.Control loading={props.joseLoading}>
+				<Form.Textarea rows={10} spellCheck={false} readOnly value={props.output} />
+			</Form.Control>
 		</Form.Field>
 		<Form.Control>
 			<Button size="large" color="primary" fullwidth onClick={props.copyToClipboard}>Copy to Clipboard</Button>
