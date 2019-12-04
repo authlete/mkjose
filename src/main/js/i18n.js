@@ -45,6 +45,10 @@ const resources = {
 				err: {
 					input_payload: 'Input payload.',
 					input_jwk: 'Input JWK for signing.'
+				},
+				footer: {
+					provided: 'This service is provided as a free service by <a href="https://www.authlete.com/">Authlete, Inc</a>, and will never log or store any input data and keys.',
+					source: 'The source code of the server and the JOSE generator used in the background are available at <a href="https://github.com/authlete/mkjose">authlete/mkjose</a> and <a href="https://github.com/authlete/authlete-jose">authlete/authlete-jose</a>, respectively.'
 				}
 			}
 		},
@@ -66,6 +70,10 @@ const resources = {
 					label: '結果',
 					copy: 'クリップボードにコピー'
 				},
+				footer: {
+					provided: 'このサービスは <a href="https://www.authlete.com/">株式会社 Authlete</a> により保証無しの無料サービスとして提供されています。 なお、このサーバーは入力されたデータや鍵を一切記録しません。',
+					source: 'このサーバー及び JOSE 生成エンジンのソースコードは GitHub 上の <a href="https://github.com/authlete/mkjose">authlete/mkjose</a> 及び <a href="https://github.com/authlete/authlete-jose">authlete/authlete-jose</a> にて公開されています。'
+				}
 			}
 		}
 };

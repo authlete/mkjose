@@ -748,7 +748,18 @@ class LanguageSwitch extends React.Component {
 	</Tabs>
 );
 	}
-} 
+}
+
+const Footer = ({...props}) => {
+	return (
+	<Container size={5}>
+		<ul>
+			<li dangerouslySetInnerHTML={{__html: props.t('footer.provided')}}></li>
+			<li dangerouslySetInnerHTML={{__html: props.t('footer.source')}}></li>
+		</ul>
+	</Container>
+	);
+}
 
 ReactDOM.render((
 	<LanguageSwitch />
@@ -765,3 +776,13 @@ ReactDOM.render((
 	),
 	document.getElementById('react')
 );
+
+ReactDOM.render((
+		<Translation i18n={i18n}>
+			{
+				(t, { i18n }) => <Footer t={t} />
+			}
+		</Translation>
+		),
+		document.getElementById('footer')
+	);
