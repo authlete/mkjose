@@ -21,22 +21,6 @@ class MkJose extends React.Component {
 		};
 	}
 	
-	setLanguage = (lang) => {
-		// short circuit out if it's not changing
-		if (lang == this.state.language) {
-			return;
-		}
-		
-		var _self = this;
-		
-		i18n.changeLanguage(lang).then((err, t) => {
-			console.log(_self.state.language + '->' + lang);
-			_self.setState({
-				language: lang
-			});
-		});
-	}
-	
 	setPayload = (val) => {
 		this.setState({
 			payload: val
@@ -176,7 +160,6 @@ class MkJose extends React.Component {
 }
 
 const InputForm = ({...props}) => {
-	console.log(props);
 	var label = props.t('input_form.payload');
 	var payload = <PlainPayload payload={props.payload} 
 		setPayload={props.setPayload} t={props.t} />;
@@ -661,7 +644,7 @@ class SigningKey extends React.Component {
 				<Level.Side align="left">
 					<Level.Item>
 						<Form.Field>
-							<Form.Label className="is-medium">Signing Key</Form.Label>
+							<Form.Label className="is-medium">{this.props.t('signing_key.label')}</Form.Label>
 						</Form.Field>
 					</Level.Item>
 				</Level.Side>
@@ -669,10 +652,10 @@ class SigningKey extends React.Component {
 					<Level.Item>
 						<Tabs type='toggle-rounded'>
 							<Tabs.Tab active={this.state.keyGen == 'preset'} onClick={this.selectTab('preset')}>
-							Preset
+							{this.props.t('signing_key.preset')}
 							</Tabs.Tab>
 							<Tabs.Tab active={this.state.keyGen == 'generate'} onClick={this.selectTab('generate')}>
-							Generate
+							{this.props.t('signing_key.generated')}
 							</Tabs.Tab>
 						</Tabs>
 					</Level.Item>
@@ -700,7 +683,7 @@ const GenerateButton = ({...props}) => {
 	return (
 		<Form.Field>
 			<Form.Control>
-				<Button size="large" color="primary" fullwidth onClick={props.generate}>Generate</Button>
+				<Button size="large" color="primary" fullwidth onClick={props.generate}>{props.t('generate')}</Button>
 			</Form.Control>
 		</Form.Field>
 	);
@@ -710,13 +693,13 @@ const OutputForm = ({...props}) => {
 	return (
 	<>
 		<Form.Field>
-			<Form.Label className="is-medium">Output</Form.Label>
+			<Form.Label className="is-medium">{props.t('output_form.label')}</Form.Label>
 			<Form.Control loading={props.joseLoading}>
 				<Form.Textarea rows={10} spellCheck={false} readOnly value={props.output} />
 			</Form.Control>
 		</Form.Field>
 		<Form.Control>
-			<Button size="large" color="primary" fullwidth onClick={props.copyToClipboard}>Copy to Clipboard</Button>
+			<Button size="large" color="primary" fullwidth onClick={props.copyToClipboard}>{props.t('output_form.copy')}</Button>
 		</Form.Control>
 	</>
 	);
@@ -740,11 +723,11 @@ class LanguageSwitch extends React.Component {
 		var _self = this;
 		
 		i18n.changeLanguage(lang).then((t) => {
-			console.log(_self.state.language + '->' + lang);
-			console.log(t);
 			_self.setState({
 				language: lang
 			});
+			
+			// re-render the main component with a new language loaded
 			ReactDOM.render((
 				<MkJose t={t} />
 				),

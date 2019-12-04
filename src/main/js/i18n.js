@@ -32,6 +32,16 @@ const resources = {
 		            PS384: 'PS384 (RSASSA-PSS using SHA-384 and MGF1 with SHA-384)',
 		            PS512: 'PS512 (RSASSA-PSS using SHA-512 and MGF1 with SHA-512)'
 				},
+				signing_key: {
+					label: 'Signing Key',
+					preset: 'Preset',
+					generated: 'Generated'
+				},
+				generate: 'Generate',
+				output_form: {
+					label: 'Output',
+					copy: 'Copy to Clipboard'
+				},
 				err: {
 					input_payload: 'Input payload.',
 					input_jwk: 'Input JWK for signing.'
@@ -46,7 +56,16 @@ const resources = {
 				},
 				signing_alg: {
 					label: '署名アルゴリズム',
-				}
+				},
+				signing_key: {
+					label: '署名鍵',
+					generated: '自動生成'
+				},
+				generate: '生成する',
+				output_form: {
+					label: '結果',
+					copy: 'クリップボードにコピー'
+				},
 			}
 		}
 };
