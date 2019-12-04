@@ -1,21 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Button, Tabs, Container, Section, Level, Form, Columns, Card, Table } from 'react-bulma-components';
-
-class Dispatcher {
-	listeners = []
-	
-	send = (msg) => {
-		this.listeners.forEach(listener => {
-			listener(msg);
-		});
-	}
-	
-	listen = (listener) => {
-		this.listeners.push(listener);
-		console.log(this.listeners);
-	}
-}
+import i18n from './i18n';
+import { useTranslation } from 'react-i18next';
+import { Translation } from 'react-i18next';
 
 class MkJose extends React.Component {
 	constructor(props) {
@@ -31,14 +19,21 @@ class MkJose extends React.Component {
 			keyLoading: false,
 			joseLoading: false
 		};
-		
-		props.dispatch.listen(this.setLanguage);
 	}
 	
 	setLanguage = (lang) => {
-		console.log(this.state.language + '->' + lang);
-		this.setState({
-			language: lang
+		// short circuit out if it's not changing
+		if (lang == this.state.language) {
+			return;
+		}
+		
+		var _self = this;
+		
+		i18n.changeLanguage(lang).then((err, t) => {
+			console.log(_self.state.language + '->' + lang);
+			_self.setState({
+				language: lang
+			});
 		});
 	}
 	
@@ -118,12 +113,12 @@ class MkJose extends React.Component {
 	
 	generate = (e) => {
 		if (!this.state.payload) {
-			alert('Input payload.');
+			alert(this.props.t('err.input_payload'));
 			return;
 		}
 		
 		if (this.state.alg != 'none' && !this.state.jwk) {
-			alert('Input JWK for signing.');
+			alert('err.input_jwk');
 		}
 		
 		const url = location.origin + '/api/jose/generate';
@@ -162,7 +157,7 @@ class MkJose extends React.Component {
 		<>
 			<Section>
 				<Container>
-					<InputForm payload={this.state.payload} payloadMode={this.state.payloadMode} 
+					<InputForm payload={this.state.payload} payloadMode={this.state.payloadMode} t={this.props.t}
 						setPayload={this.setPayload} selectTab={this.selectTab} clearPayload={this.clearPayload} />
 					<SigningAlg alg={this.state.alg} setAlg={this.setAlgEvt} />
 					<SigningKey jwk={this.state.jwk} keyLoading={this.keyLoading}
@@ -181,16 +176,17 @@ class MkJose extends React.Component {
 }
 
 const InputForm = ({...props}) => {
-	var label = 'Payload';
+	console.log(props);
+	var label = props.t('input_form.payload');
 	var payload = <PlainPayload payload={props.payload} 
 		setPayload={props.setPayload} />;
 
 	if (props.payloadMode == 'ro') {
-		label = 'Payload for Request Object';
+		label = props.t('input_form.payload_ro');
 		payload = <RequestObjectPayload payload={props.payload} 
 			setPayload={props.setPayload} />;
 	} else if (props.payloadMode == 'ciba') {
-		label = 'Payload for Backchannel Authentication';
+		label = props.t('input_form.payload_ciba');
 		payload = <CibaPayload payload={props.payload} 
 			setPayload={props.setPayload} />;
 	}
@@ -208,13 +204,13 @@ const InputForm = ({...props}) => {
 					<Level.Item>
 						<Tabs type='boxed'>
 							<Tabs.Tab active={props.payloadMode == 'plain'} onClick={props.selectTab('plain')}>
-							Plain
+							{props.t('input_form.plain')}
 							</Tabs.Tab>
 							<Tabs.Tab active={props.payloadMode == 'ciba'} onClick={props.selectTab('ciba')}>
-							CIBA
+							{props.t('input_form.ciba')}
 							</Tabs.Tab>
 							<Tabs.Tab active={props.payloadMode == 'ro'} onClick={props.selectTab('ro')}>
-							Request Object
+							{props.t('input_form.ro')}
 							</Tabs.Tab>
 						</Tabs>
 					</Level.Item>
@@ -735,14 +731,25 @@ class LanguageSwitch extends React.Component {
 		};
 	}
 	
-	setLanguage = (msg) => {
-		console.log(msg);
-	}
-	
 	selectTab = (lang) => () => {
-		this.props.dispatch.send(lang);
-		this.setState({
-			language: lang
+		// short circuit out if it's not changing
+		if (lang == this.state.language) {
+			return;
+		}
+		
+		var _self = this;
+		
+		i18n.changeLanguage(lang).then((t) => {
+			console.log(_self.state.language + '->' + lang);
+			console.log(t);
+			_self.setState({
+				language: lang
+			});
+			ReactDOM.render((
+				<MkJose t={t} />
+				),
+				document.getElementById('react')
+			);
 		});
 	}
 	
@@ -760,16 +767,18 @@ class LanguageSwitch extends React.Component {
 	}
 } 
 
-const dispatch = new Dispatcher();
-
 ReactDOM.render((
-	<LanguageSwitch dispatch={dispatch} />
+	<LanguageSwitch />
 	), 
 	document.getElementById('languageSwitch')
 );
 
 ReactDOM.render((
-	<MkJose dispatch={dispatch} />
+	<Translation i18n={i18n}>
+		{
+			(t, { i18n }) => <MkJose t={t} />
+		}
+	</Translation>
 	),
 	document.getElementById('react')
 );
