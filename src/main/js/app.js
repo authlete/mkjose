@@ -2,11 +2,27 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Button, Tabs, Container, Section, Level, Form, Columns, Card, Table } from 'react-bulma-components';
 
+class Dispatcher {
+	listeners = []
+	
+	send = (msg) => {
+		this.listeners.forEach(listener => {
+			listener(msg);
+		});
+	}
+	
+	listen = (listener) => {
+		this.listeners.push(listener);
+		console.log(this.listeners);
+	}
+}
+
 class MkJose extends React.Component {
 	constructor(props) {
 		super(props);
 		
 		this.state = {
+			language: 'en', // can also be 'ja'
 			payload: '',
 			alg: 'none',
 			jwk: '',
@@ -15,6 +31,15 @@ class MkJose extends React.Component {
 			keyLoading: false,
 			joseLoading: false
 		};
+		
+		props.dispatch.listen(this.setLanguage);
+	}
+	
+	setLanguage = (lang) => {
+		console.log(this.state.language + '->' + lang);
+		this.setState({
+			language: lang
+		});
 	}
 	
 	setPayload = (val) => {
@@ -646,7 +671,7 @@ class SigningKey extends React.Component {
 				</Level.Side>
 				<Level.Side align="right">
 					<Level.Item>
-						<Tabs type='toggle-rounded' color='primary'>
+						<Tabs type='toggle-rounded'>
 							<Tabs.Tab active={this.state.keyGen == 'preset'} onClick={this.selectTab('preset')}>
 							Preset
 							</Tabs.Tab>
@@ -701,8 +726,50 @@ const OutputForm = ({...props}) => {
 	);
 }
 
+class LanguageSwitch extends React.Component {
+	constructor(props) {
+		super(props);
+		
+		this.state = {
+			language: 'en'
+		};
+	}
+	
+	setLanguage = (msg) => {
+		console.log(msg);
+	}
+	
+	selectTab = (lang) => () => {
+		this.props.dispatch.send(lang);
+		this.setState({
+			language: lang
+		});
+	}
+	
+	render = () => {
+		return (
+			<Tabs type='toggle' className='has-background-dark'>
+				<Tabs.Tab active={this.state.language == 'en'} onClick={this.selectTab('en')}>
+				English
+				</Tabs.Tab>
+				<Tabs.Tab active={this.state.language == 'ja'} onClick={this.selectTab('ja')}>
+				日本語
+			</Tabs.Tab>
+	</Tabs>
+);
+	}
+} 
+
+const dispatch = new Dispatcher();
+
 ReactDOM.render((
-	<MkJose />
+	<LanguageSwitch dispatch={dispatch} />
+	), 
+	document.getElementById('languageSwitch')
+);
+
+ReactDOM.render((
+	<MkJose dispatch={dispatch} />
 	),
 	document.getElementById('react')
 );
