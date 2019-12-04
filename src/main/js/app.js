@@ -175,7 +175,7 @@ const InputForm = ({...props}) => {
 	}
 	return (
 		<>
-			<Level className="is-mobile">
+			<Level>
 				<Level.Side align="left">
 					<Level.Item>
 						<Form.Field>
