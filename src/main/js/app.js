@@ -543,7 +543,7 @@ class RequestObjectPayload extends React.Component {
 								<td><Button onClick={this.clearClaims}><i className="far fa-trash-alt"></i></Button></td>
 							</tr>
 							<tr>
-								<td>{props.t('ro.arbitrary')}</td>
+								<td>{this.props.t('ro.arbitrary')}</td>
 								<td><Form.Textarea id="ro-arbitrary_json" rows={5} cols={50} spellCheck="false"
 									onChange={this.setArbitrary} value={this.state.arbString} /></td>
 								<td><Button onClick={this.clearArbitrary}><i className="far fa-trash-alt"></i></Button></td>
