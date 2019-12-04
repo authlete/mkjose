@@ -660,9 +660,9 @@ class SigningKey extends React.Component {
 						</Tabs>
 					</Level.Item>
 					<Level.Item>
-						<Button onClick={this.genKey('RSA')}>RSA</Button>
-						<Button onClick={this.genKey('EC')}>EC</Button>
-						<Button onClick={this.genKey('oct')}>oct</Button>
+						<Button onClick={this.genKey('RSA')}>{this.props.t('signing_key.rsa')}</Button>
+						<Button onClick={this.genKey('EC')}>{this.props.t('signing_key.ec')}</Button>
+						<Button onClick={this.genKey('oct')}>{this.props.t('signing_key.oct')}</Button>
 					</Level.Item>
 					<Level.Item>
 						<Button onClick={this.props.clearKey}><i className="far fa-trash-alt"></i></Button>

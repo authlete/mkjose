@@ -35,7 +35,10 @@ const resources = {
 				signing_key: {
 					label: 'Signing Key',
 					preset: 'Preset',
-					generated: 'Generated'
+					generated: 'Generated',
+					rsa: 'RSA',
+					ec: 'EC',
+					oct: 'oct'
 				},
 				generate: 'Generate',
 				output_form: {
