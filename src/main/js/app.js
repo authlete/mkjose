@@ -159,15 +159,15 @@ class MkJose extends React.Component {
 				<Container>
 					<InputForm payload={this.state.payload} payloadMode={this.state.payloadMode} t={this.props.t}
 						setPayload={this.setPayload} selectTab={this.selectTab} clearPayload={this.clearPayload} />
-					<SigningAlg alg={this.state.alg} setAlg={this.setAlgEvt} />
-					<SigningKey jwk={this.state.jwk} keyLoading={this.keyLoading}
+					<SigningAlg alg={this.state.alg} setAlg={this.setAlgEvt} t={this.props.t} />
+					<SigningKey jwk={this.state.jwk} keyLoading={this.keyLoading} t={this.props.t} 
 						setKey={this.setKey} setAlgForKty={this.setAlgForKty} clearKey={this.clearKey} callMkJwk={this.callMkJwk} />
-					<GenerateButton generate={this.generate} />
+					<GenerateButton generate={this.generate} t={this.props.t} />
 				</Container>
 			</Section>
 			<Section>
 				<Container>
-					<OutputForm output={this.state.output} copyToClipboard={this.copyToClipboard} joseLoading={this.joseLoading} />
+					<OutputForm output={this.state.output} copyToClipboard={this.copyToClipboard} joseLoading={this.joseLoading}  t={this.props.t} />
 				</Container>
 			</Section>
 		</>
@@ -179,16 +179,16 @@ const InputForm = ({...props}) => {
 	console.log(props);
 	var label = props.t('input_form.payload');
 	var payload = <PlainPayload payload={props.payload} 
-		setPayload={props.setPayload} />;
+		setPayload={props.setPayload} t={props.t} />;
 
 	if (props.payloadMode == 'ro') {
 		label = props.t('input_form.payload_ro');
 		payload = <RequestObjectPayload payload={props.payload} 
-			setPayload={props.setPayload} />;
+			setPayload={props.setPayload} t={props.t} />;
 	} else if (props.payloadMode == 'ciba') {
 		label = props.t('input_form.payload_ciba');
 		payload = <CibaPayload payload={props.payload} 
-			setPayload={props.setPayload} />;
+			setPayload={props.setPayload} t={props.t} />;
 	}
 	return (
 		<>
@@ -560,7 +560,7 @@ class RequestObjectPayload extends React.Component {
 								<td><Button onClick={this.clearClaims}><i className="far fa-trash-alt"></i></Button></td>
 							</tr>
 							<tr>
-								<td>Arbitrary JSON</td>
+								<td>{props.t('ro.arbitrary')}</td>
 								<td><Form.Textarea id="ro-arbitrary_json" rows={5} cols={50} spellCheck="false"
 									onChange={this.setArbitrary} value={this.state.arbString} /></td>
 								<td><Button onClick={this.clearArbitrary}><i className="far fa-trash-alt"></i></Button></td>
@@ -576,22 +576,22 @@ class RequestObjectPayload extends React.Component {
 const SigningAlg = ({...props}) => {
 	return (
 		<Form.Field>
-			<Form.Label className="is-medium">Signing Algorithm</Form.Label>
+			<Form.Label className="is-medium">{props.t('signing_alg.label')}</Form.Label>
 			<Form.Control>
 				<Form.Select onChange={props.setAlg} value={props.alg || ''}>
-	                <option value="none">none</option>
-	                <option value="HS256">HS256 (HMAC using SHA-256)</option>
-	                <option value="HS384">HS384 (HMAC using SHA-384)</option>
-	                <option value="HS512">HS512 (HMAC using SHA-512)</option>
-	                <option value="RS256">RS256 (RSASSA-PKCS1-v1_5 using SHA-256)</option>
-	                <option value="RS384">RS384 (RSASSA-PKCS1-v1_5 using SHA-384)</option>
-	                <option value="RS512">RS512 (RSASSA-PKCS1-v1_5 using SHA-512)</option>
-	                <option value="ES256">ES256 (ECDSA using P-256 and SHA-256)</option>
-	                <option value="ES384">ES384 (ECDSA using P-384 and SHA-384)</option>
-	                <option value="ES512">ES512 (ECDSA using P-521 and SHA-512)</option>
-	                <option value="PS256">PS256 (RSASSA-PSS using SHA-256 and MGF1 with SHA-256)</option>
-	                <option value="PS256">PS384 (RSASSA-PSS using SHA-384 and MGF1 with SHA-384)</option>
-	                <option value="PS256">PS512 (RSASSA-PSS using SHA-512 and MGF1 with SHA-512)</option>
+	                <option value="none">{props.t('signing_alg.none')}</option>
+	                <option value="HS256">{props.t('signing_alg.HS256')}</option>
+	                <option value="HS384">{props.t('signing_alg.HS384')}</option>
+	                <option value="HS512">{props.t('signing_alg.HS512')}</option>
+	                <option value="RS256">{props.t('signing_alg.RS256')}</option>
+	                <option value="RS384">{props.t('signing_alg.RS384')}</option>
+	                <option value="RS512">{props.t('signing_alg.RS512')}</option>
+	                <option value="ES256">{props.t('signing_alg.ES256')}</option>
+	                <option value="ES384">{props.t('signing_alg.ES384')}</option>
+	                <option value="ES512">{props.t('signing_alg.ES512')}</option>
+	                <option value="PS256">{props.t('signing_alg.PS256')}</option>
+	                <option value="PS384">{props.t('signing_alg.PS384')}</option>
+	                <option value="PS512">{props.t('signing_alg.PS512')}</option>
 				</Form.Select>
 			</Form.Control>
 		</Form.Field>
