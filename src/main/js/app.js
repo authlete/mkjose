@@ -712,6 +712,10 @@ class LanguageSwitch extends React.Component {
 		this.state = {
 			language: 'en'
 		};
+		
+		if (props.lang) {
+			this.selectTab(props.lang)();
+		}
 	}
 	
 	selectTab = (lang) => () => {
@@ -761,8 +765,12 @@ const Footer = ({...props}) => {
 	);
 }
 
+const urlObject = new URL(window.location);
+const lang = urlObject.searchParams.get('lang')
+console.log(lang)
+
 ReactDOM.render((
-	<LanguageSwitch />
+	<LanguageSwitch lang={lang} />
 	), 
 	document.getElementById('languageSwitch')
 );
