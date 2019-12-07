@@ -730,13 +730,6 @@ class LanguageSwitch extends React.Component {
 			_self.setState({
 				language: lang
 			});
-			
-			// re-render the main component with a new language loaded
-			ReactDOM.render((
-				<MkJose t={t} />
-				),
-				document.getElementById('react')
-			);
 		});
 	}
 	
@@ -786,11 +779,11 @@ ReactDOM.render((
 );
 
 ReactDOM.render((
-		<Translation i18n={i18n}>
-			{
-				(t, { i18n }) => <Footer t={t} />
-			}
-		</Translation>
-		),
-		document.getElementById('footer')
-	);
+	<Translation i18n={i18n}>
+		{
+			(t, { i18n }) => <Footer t={t} />
+		}
+	</Translation>
+	),
+	document.getElementById('footer')
+);
