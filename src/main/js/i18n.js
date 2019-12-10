@@ -8,7 +8,7 @@ const resources = {
 				input_form: {
 					payload: 'Payload',
 					payload_ro: 'Payload for Request Object',
-					payload_ciba: 'Payload for CIBA',
+					payload_ciba: 'Payload for Backchannel Authentication Request',
 					plain: 'Plain',
 					ciba: 'CIBA',
 					ro: 'Request Object'
@@ -58,20 +58,32 @@ const resources = {
 		ja: {
 			translation: {
 				input_form: {
-					payload: "ペイロード",
+					payload: 'ペイロード',
+					payload_ro: 'リクエストオブジェクト用ペイロード',
+					payload_ciba: 'バックチャネル認証リクエスト用ペイロード',
+					plain: '直接入力',
+					ciba: 'CIBA',
 					ro: 'リクエストオブジェクト'
+				},
+				ro: {
+					arbitrary: '任意の JSON'
 				},
 				signing_alg: {
 					label: '署名アルゴリズム',
 				},
 				signing_key: {
 					label: '署名鍵',
+					preset: '固定値',
 					generated: '自動生成'
 				},
 				generate: '生成する',
 				output_form: {
 					label: '結果',
 					copy: 'クリップボードにコピー'
+				},
+				err: {
+					input_payload: 'ペイロードを入力してください。',
+					input_jwk: '署名用の JWK を入力してください。'
 				},
 				footer: {
 					provided: 'このサービスは <a href="https://www.authlete.com/">株式会社 Authlete</a> により保証無しの無料サービスとして提供されています。 なお、このサーバーは入力されたデータや鍵を一切記録しません。',
