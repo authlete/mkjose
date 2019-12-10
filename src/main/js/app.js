@@ -102,7 +102,8 @@ class MkJose extends React.Component {
 		}
 		
 		if (this.state.alg != 'none' && !this.state.jwk) {
-			alert('err.input_jwk');
+			alert(this.props.t('err.input_jwk'));
+			return;
 		}
 		
 		const url = location.origin + '/api/jose/generate';
