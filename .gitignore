@@ -1,3 +1,7 @@
 .settings/
 target/
 .DS_Store
+.classpath
+.project
+node_modules/
+src/main/webapp/built/
