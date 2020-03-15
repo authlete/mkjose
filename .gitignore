@@ -5,3 +5,4 @@ target/
 .project
 node_modules/
 src/main/webapp/built/
+bin
