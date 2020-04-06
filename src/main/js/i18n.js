@@ -9,11 +9,26 @@ const resources = {
 					payload: 'Payload',
 					payload_ro: 'Payload for Request Object',
 					payload_ciba: 'Payload for Backchannel Authentication Request',
-					plain: 'Plain',
-					ciba: 'CIBA',
-					ro: 'Request Object'
+					payload_ca: 'Payload for Client Assertion',
+					tabs: {
+						desktop: {
+							plain: 'Plain',
+							ciba: 'CIBA',
+							ro: 'Request Object',
+							ca: 'Client Assertion',
+						},
+						mobile: {
+							plain: 'Plain',
+							ciba: 'CIBA',
+							ro: 'RO',
+							ca: 'Assn.',
+						}
+					}
 				},
 				ro: {
+					arbitrary: 'Arbitrary JSON'
+				},
+				ca: {
 					arbitrary: 'Arbitrary JSON'
 				},
 				signing_alg: {
@@ -61,11 +76,18 @@ const resources = {
 					payload: 'ペイロード',
 					payload_ro: 'リクエストオブジェクト用ペイロード',
 					payload_ciba: 'バックチャネル認証リクエスト用ペイロード',
-					plain: '直接入力',
-					ciba: 'CIBA',
-					ro: 'リクエストオブジェクト'
+					tabs: {
+						desktop: {
+							plain: '直接入力',
+							ciba: 'CIBA',
+							ro: 'リクエストオブジェクト'
+						}
+					}
 				},
 				ro: {
+					arbitrary: '任意の JSON'
+				},
+				ca: {
 					arbitrary: '任意の JSON'
 				},
 				signing_alg: {
@@ -101,7 +123,7 @@ i18n
 		fallbackLng: "en",
 	
 		interpolation: {
-			escapeValue: false // react already safes from xss
+			escapeValue: false // react already safe from xss
 		}
 });
 
