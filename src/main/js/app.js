@@ -14,7 +14,7 @@ class MkJose extends React.Component {
 			payload: '',
 			alg: 'none',
 			jwk: '',
-			payloadMode: 'plain',   // can also be 'ciba' or 'ro'
+			payloadMode: 'plain',   // can also be 'ciba' or 'ro' or 'ca'
 			output: '',
 			keyLoading: false,
 			joseLoading: false
@@ -173,6 +173,10 @@ const InputForm = ({...props}) => {
 		label = props.t('input_form.payload_ciba');
 		payload = <CibaPayload payload={props.payload} 
 			setPayload={props.setPayload} t={props.t} />;
+	} else if (props.payloadMode == 'ca') {
+		label = props.t('input_form.payload_ca');
+		payload = <ClientAssertionPayload payload={props.payload}
+			setPayload={props.setPayload} t={props.t} />;
 	}
 	return (
 		<>
@@ -188,13 +192,20 @@ const InputForm = ({...props}) => {
 					<Level.Item>
 						<Tabs type='boxed'>
 							<Tabs.Tab active={props.payloadMode == 'plain'} onClick={props.selectTab('plain')}>
-							{props.t('input_form.plain')}
+								<span className="is-hidden-touch">{props.t('input_form.tabs.desktop.plain')}</span>
+								<span className="is-hidden-desktop">{props.t('input_form.tabs.mobile.plain')}</span>
 							</Tabs.Tab>
 							<Tabs.Tab active={props.payloadMode == 'ciba'} onClick={props.selectTab('ciba')}>
-							{props.t('input_form.ciba')}
+								<span className="is-hidden-touch">{props.t('input_form.tabs.desktop.ciba')}</span>
+								<span className="is-hidden-desktop">{props.t('input_form.tabs.mobile.ciba')}</span>
 							</Tabs.Tab>
 							<Tabs.Tab active={props.payloadMode == 'ro'} onClick={props.selectTab('ro')}>
-							{props.t('input_form.ro')}
+								<span className="is-hidden-touch">{props.t('input_form.tabs.desktop.ro')}</span>
+								<span className="is-hidden-desktop">{props.t('input_form.tabs.mobile.ro')}</span>
+							</Tabs.Tab>
+							<Tabs.Tab active={props.payloadMode == 'ca'} onClick={props.selectTab('ca')}>
+								<span className="is-hidden-touch">{props.t('input_form.tabs.desktop.ca')}</span>
+								<span className="is-hidden-desktop">{props.t('input_form.tabs.mobile.ca')}</span>
 							</Tabs.Tab>
 						</Tabs>
 					</Level.Item>
@@ -315,11 +326,13 @@ class CibaPayload extends React.Component {
 		return (
 			<Card color="light">
 				<Card.Content>
-					<Table>
-						<tbody>
-							{fields}
-						</tbody>
-					</Table>
+					<div className="table-container">
+						<Table>
+							<tbody>
+								{fields}
+							</tbody>
+						</Table>
+					</div>
 				</Card.Content>
 			</Card>
 		);
@@ -534,23 +547,191 @@ class RequestObjectPayload extends React.Component {
 		return (
 			<Card color="light">
 				<Card.Content>
-					<Table>
-						<tbody>
-							{fields}
-							<tr>
-								<td><code>claims</code></td>
-								<td><Form.Textarea id="ro-claims" rows={5} cols={50} spellCheck="false"
-									onChange={this.setClaims} value={this.state.claimsString} /></td>
-								<td><Button onClick={this.clearClaims}><i className="far fa-trash-alt"></i></Button></td>
-							</tr>
-							<tr>
-								<td>{this.props.t('ro.arbitrary')}</td>
-								<td><Form.Textarea id="ro-arbitrary_json" rows={5} cols={50} spellCheck="false"
-									onChange={this.setArbitrary} value={this.state.arbString} /></td>
-								<td><Button onClick={this.clearArbitrary}><i className="far fa-trash-alt"></i></Button></td>
-							</tr>
-						</tbody>
-					</Table>
+					<div className="table-container">
+						<Table>
+							<tbody>
+								{fields}
+								<tr>
+									<td><code>claims</code></td>
+									<td><Form.Textarea id="ro-claims" rows={5} cols={50} spellCheck="false"
+										onChange={this.setClaims} value={this.state.claimsString} /></td>
+									<td><Button onClick={this.clearClaims}><i className="far fa-trash-alt"></i></Button></td>
+								</tr>
+								<tr>
+									<td>{this.props.t('ro.arbitrary')}</td>
+									<td><Form.Textarea id="ro-arbitrary_json" rows={5} cols={50} spellCheck="false"
+										onChange={this.setArbitrary} value={this.state.arbString} /></td>
+									<td><Button onClick={this.clearArbitrary}><i className="far fa-trash-alt"></i></Button></td>
+								</tr>
+							</tbody>
+						</Table>
+					</div>
+				</Card.Content>
+			</Card>
+		);
+	}
+}
+
+class ClientAssertionPayload extends React.Component {
+	constructor(props) {
+		super(props);
+		
+		var p = {};
+		try {
+			p = JSON.parse(props.payload);	
+		} catch (e) {
+			// non-json payload, ignore
+		}
+		
+		
+		var arb = {};
+		var arbString = '';
+		Object.keys(p).forEach((field) => {
+			if (Object.keys(this.fieldTypes).indexOf(field) < 0) {
+				arb[field] = p[field];
+			}
+		});
+		if (Object.keys(arb).length > 0) {
+			arbString = JSON.stringify(arb, null, 4);
+		}
+		
+		this.state = {
+			payload: p,
+			arbString: arbString
+		};
+	}
+	
+	componentDidUpdate(prevProps) {
+		if (!!prevProps.payload && !this.props.payload) {
+			this.setState({
+				payload: {},
+				arbString: ''
+			});
+		}
+	}
+
+	fieldTypes = {
+		iss: 'text',
+		sub: 'text',
+		aud: 'text',
+		exp: 'datetime-local',
+		nbf: 'datetime-local',
+		iat: 'datetime-local',
+		jti: 'text',
+	}
+
+	setPayloadItem = (field) => (e) => {
+		
+		var p = this.state.payload;
+		
+		var val = e.target.value;
+				
+		if (e.target.attributes["type"].value == 'number' 
+			|| e.target.attributes["type"].value == 'datetime-local') {
+			val = Number(val);
+		}
+		
+		p[field] = val;
+		
+		this.props.setPayload(JSON.stringify(p, null, 4));
+		
+		this.setState({
+			payload: p
+		});
+	}
+	
+	clearPayloadItem = (field) => (e) => {
+		var p = this.state.payload;
+
+		p[field] = undefined;
+		
+		this.props.setPayload(JSON.stringify(p, null, 4));
+		
+		this.setState({
+			payload: p
+		});
+	}
+	
+	setArbitrary = (e) => {
+		const val = e.target.value;
+
+		var p = {};
+
+		// try to parse as json
+		var arb = undefined;
+		try {
+			// copy over standard fields first
+			Object.keys(this.fieldTypes).forEach((field) => {
+				p[field] = this.state.payload[field];
+			});
+
+			// if there are new fields, copy them over
+			if (val) {
+				arb = JSON.parse(val);	
+
+				Object.keys(arb).forEach((field) => {
+					p[field] = arb[field];
+				});
+			}
+			
+			this.props.setPayload(JSON.stringify(p, null, 4));
+			
+		} catch (e) {
+			// non-json payload, ignore the update
+		}
+		
+		this.setState({
+			payload: p,
+			arbString: val
+		});
+		
+	}
+	
+	clearArbitrary = (e) => {
+		var p = {};
+		// copy over standard fields first
+		Object.keys(this.fieldTypes).forEach((field) => {
+			p[field] = this.state.payload[field];
+		});
+		
+		this.props.setPayload(JSON.stringify(p, null, 4));
+
+		this.setState({
+			payload: p,
+			arbString: ''
+		});
+
+	}
+	
+	render() {
+		const fields = [];
+		Object.keys(this.fieldTypes).forEach((field) => {
+			fields.push(
+				<tr key={'ca-' + field}>
+					<td><code>{field}</code></td>
+					<td><input id={'ca-' + field} type={this.fieldTypes[field]} size={60} 
+						onChange={this.setPayloadItem(field)} value={this.state.payload[field] || ''} /></td>
+					<td><Button onClick={this.clearPayloadItem(field)}><i className="far fa-trash-alt"></i></Button></td>
+				</tr>
+			);
+		});
+		
+		return (
+			<Card color="light">
+				<Card.Content>
+					<div className="table-container">
+						<Table>
+							<tbody>
+								{fields}
+								<tr>
+									<td>{this.props.t('ca.arbitrary')}</td>
+									<td><Form.Textarea id="ca-arbitrary_json" rows={5} cols={50} spellCheck="false"
+										onChange={this.setArbitrary} value={this.state.arbString} /></td>
+									<td><Button onClick={this.clearArbitrary}><i className="far fa-trash-alt"></i></Button></td>
+								</tr>
+							</tbody>
+						</Table>
+					</div>
 				</Card.Content>
 			</Card>
 		);
