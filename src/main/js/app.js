@@ -837,11 +837,12 @@ class SigningKey extends React.Component {
 	
 	setShared = (e) => {
 		const shared = e.target.value;
-		// if someone's editing the shared value the key gets replaced
+		// if someone's editing the shared value the key gets replaced completely
 		const k = {
 			kty: 'oct',
 			k: base64url.encode(shared)
 		};
+		this.props.setAlgForKty('oct');
 		this.props.setKey(JSON.stringify(k, null, 4));
 	}
 	
@@ -889,7 +890,7 @@ class SigningKey extends React.Component {
 			<Form.Field>
 				<Form.Control loading={this.props.keyLoading}>
 					{ this.state.keyGen == 'generate' && (
-						<Notification color="info">{this.props.t('signing_key.mkjwk')}</Notification>
+						<Notification color="info" dangerouslySetInnerHTML={{__html: this.props.t('signing_key.mkjwk')}}></Notification>
 					)}
 					{ this.state.keyGen == 'shared' && (
 						<Form.Input className="has-background-light has-text-primary" type="text" placeholder={this.props.t('signing_key.shared_secret')} onChange={this.setShared} value={this.getShared(this.props.jwk)} />
@@ -984,7 +985,6 @@ const Footer = ({...props}) => {
 
 const urlObject = new URL(window.location);
 const lang = urlObject.searchParams.get('lang')
-console.log(lang)
 
 ReactDOM.render((
 	<LanguageSwitch lang={lang} />
