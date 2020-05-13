@@ -58,8 +58,7 @@ const resources = {
 					oct: 'oct',
 					mkjwk: 'Keys will be generated using the <a href="https://mkjwk.org/" target="_blank">mkjwk</a> online key generation service.',
 					source: 'Source:',
-					load: 'Load:',
-					
+					load: 'Load:'
 				},
 				generate: 'Generate',
 				output_form: {
@@ -102,7 +101,12 @@ const resources = {
 				signing_key: {
 					label: '署名鍵',
 					preset: '固定値',
-					generated: '自動生成'
+					generated: '自動生成',
+					shared: '共有鍵専用',
+					shared_secret: '共有鍵（直接入力）',
+					mkjwk: '鍵はオンライン鍵生成サービス <a href="https://mkjwk.org/" target="_blank">mkjwk</a> を用いて生成します。',
+					source: 'ソース:',
+					load: 'タイプ:'
 				},
 				generate: '生成する',
 				output_form: {
