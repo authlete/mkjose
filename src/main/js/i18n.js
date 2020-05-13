@@ -51,9 +51,15 @@ const resources = {
 					label: 'Signing Key',
 					preset: 'Preset',
 					generated: 'Generated',
+					shared: 'Shared',
+					shared_secret: 'Shared secret (in plain text)',
 					rsa: 'RSA',
 					ec: 'EC',
-					oct: 'oct'
+					oct: 'oct',
+					mkjwk: 'Keys will be generated using the <a href="https://mkjwk.org/" target="_blank">mkjwk</a> online key generation service.',
+					source: 'Source:',
+					load: 'Load:',
+					
 				},
 				generate: 'Generate',
 				output_form: {

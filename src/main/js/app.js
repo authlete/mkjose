@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Tabs, Container, Section, Level, Form, Columns, Card, Table } from 'react-bulma-components';
+import { Button, Tabs, Container, Section, Level, Form, Columns, Card, Table, Notification } from 'react-bulma-components';
 import i18n from './i18n';
 import { useTranslation } from 'react-i18next';
 import { Translation } from 'react-i18next';
+import base64url from 'base64url';
 
 class MkJose extends React.Component {
 	constructor(props) {
@@ -784,10 +785,10 @@ class SigningKey extends React.Component {
 		if (this.state.keyGen == 'preset') {
 			var k = this.loadPresetKey(kty);
 			this.props.setKey(JSON.stringify(k, null, 4));
-			this.props.setAlgForKty(kty);
 		} else {
 			this.props.callMkJwk(kty);
 		}
+		this.props.setAlgForKty(kty);
 	}
 	
 	loadPresetKey = (kty) => {
@@ -819,6 +820,32 @@ class SigningKey extends React.Component {
 		}
 	}
 	
+	getShared = (jwk) => {
+		if (jwk) {
+			// get out the shared secret portion
+			const k = JSON.parse(jwk);
+			if (k.kty == "oct") {
+				const shared = base64url.decode(k.k);
+				return shared;
+			} else {
+				return '';
+			}
+		} else {
+			return '';
+		}
+	}
+	
+	setShared = (e) => {
+		const shared = e.target.value;
+		// if someone's editing the shared value the key gets replaced completely
+		const k = {
+			kty: 'oct',
+			k: base64url.encode(shared)
+		};
+		this.props.setAlgForKty('oct');
+		this.props.setKey(JSON.stringify(k, null, 4));
+	}
+	
 	render() {
 		return (
 		<>
@@ -832,6 +859,17 @@ class SigningKey extends React.Component {
 				</Level.Side>
 				<Level.Side align="right">
 					<Level.Item>
+						{this.state.keyGen != 'shared' && ( 
+						<>
+							{this.props.t('signing_key.load')}
+							<Button onClick={this.genKey('RSA')}>{this.props.t('signing_key.rsa')}</Button>
+							<Button onClick={this.genKey('EC')}>{this.props.t('signing_key.ec')}</Button>
+							<Button onClick={this.genKey('oct')}>{this.props.t('signing_key.oct')}</Button>
+						</>
+						)}
+					</Level.Item>
+					<Level.Item>
+						{this.props.t('signing_key.source')}
 						<Tabs type='toggle-rounded'>
 							<Tabs.Tab active={this.state.keyGen == 'preset'} onClick={this.selectTab('preset')}>
 							{this.props.t('signing_key.preset')}
@@ -839,12 +877,10 @@ class SigningKey extends React.Component {
 							<Tabs.Tab active={this.state.keyGen == 'generate'} onClick={this.selectTab('generate')}>
 							{this.props.t('signing_key.generated')}
 							</Tabs.Tab>
+							<Tabs.Tab active={this.state.keyGen == 'shared'} onClick={this.selectTab('shared')}>
+							{this.props.t('signing_key.shared')}
+							</Tabs.Tab>
 						</Tabs>
-					</Level.Item>
-					<Level.Item>
-						<Button onClick={this.genKey('RSA')}>{this.props.t('signing_key.rsa')}</Button>
-						<Button onClick={this.genKey('EC')}>{this.props.t('signing_key.ec')}</Button>
-						<Button onClick={this.genKey('oct')}>{this.props.t('signing_key.oct')}</Button>
 					</Level.Item>
 					<Level.Item>
 						<Button onClick={this.props.clearKey}><i className="far fa-trash-alt"></i></Button>
@@ -853,7 +889,14 @@ class SigningKey extends React.Component {
 			</Level>			
 			<Form.Field>
 				<Form.Control loading={this.props.keyLoading}>
+					{ this.state.keyGen == 'generate' && (
+						<Notification color="info" dangerouslySetInnerHTML={{__html: this.props.t('signing_key.mkjwk')}}></Notification>
+					)}
+					{ this.state.keyGen == 'shared' && (
+						<Form.Input className="has-background-light has-text-primary" type="text" placeholder={this.props.t('signing_key.shared_secret')} onChange={this.setShared} value={this.getShared(this.props.jwk)} />
+					)}
 					<Form.Textarea rows={10} spellCheck={false} onChange={this.setKey} value={this.props.jwk} />
+					
 				</Form.Control>
 			</Form.Field>
 		</>
@@ -942,7 +985,6 @@ const Footer = ({...props}) => {
 
 const urlObject = new URL(window.location);
 const lang = urlObject.searchParams.get('lang')
-console.log(lang)
 
 ReactDOM.render((
 	<LanguageSwitch lang={lang} />
