@@ -398,6 +398,7 @@ class RequestObjectPayload extends React.Component {
 		nonce: 'text',
 		max_age: 'number',
 		code_challenge: 'text',
+		code_challenge_method: 'text',
 	}
 
 	setPayloadItem = (field) => (e) => {
