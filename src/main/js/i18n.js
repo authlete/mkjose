@@ -110,7 +110,8 @@ const resources = {
 					shared_secret: '共有鍵（直接入力）',
 					mkjwk: '鍵はオンライン鍵生成サービス <a href="https://mkjwk.org/" target="_blank">mkjwk</a> を用いて生成します。',
 					source: 'ソース:',
-					load: 'タイプ:'
+					load: '読込:',
+					generate: '生成:'
 				},
 				generate: '生成する',
 				output_form: {
