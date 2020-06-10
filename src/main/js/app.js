@@ -47,6 +47,8 @@ class MkJose extends React.Component {
 	setKey = (val) => {
 		this.setState({
 			jwk: val
+		}, () => {
+			this.setAlgForKey();
 		});
 	}
 	
@@ -63,6 +65,8 @@ class MkJose extends React.Component {
 			url = url + 'ec?crv=P-256';
 		} else if (kty === 'oct') {
 			url = url + 'oct?size=2048';
+		} else if (kty == 'OKP') {
+			url = url + 'okp?crv=Ed25519'
 		} else {
 			return;
 		}
@@ -76,23 +80,80 @@ class MkJose extends React.Component {
 		fetch(url).then(function (res) {
 			if (res.ok) {
 				res.json().then(function (data) {
-					_self.setState({
-						jwk: JSON.stringify(data.jwk, null, 4),
-						keyLoading: false
-					});
-					_self.setAlgForKty(kty);
+					_self.setKey(JSON.stringify(data.jwk, null, 4));
 				});
 			}
 		});
 	}
 		
-	setAlgForKty = (kty) => {
-		if (kty == 'RSA') {
-			this.setAlgVal('RS256');
-		} else if (kty == 'EC') {
-			this.setAlgVal('ES256');
-		} else if (kty == 'oct') {
-			this.setAlgVal('HS256');
+	setAlgForKey = () => {
+		// only called when the key changes
+		if (!this.state.jwk) {
+			// not a valid key, don't change anything
+			return;
+		}
+		
+		try {
+			const k = JSON.parse(this.state.jwk);
+
+			if (k.alg) {
+				// if the key has an alg, just use that no matter its value
+				this.setAlgVal(k.alg);
+				return;
+			}
+			
+			if (!k.kty) {
+				// if we don't know the key type, we can't test on it, so don't change the alg
+				return;
+			}
+			
+			if (k.kty == 'RSA') {
+				if (this.state.alg == 'RS256' 
+					|| this.state.alg == 'RS384'
+					|| this.state.alg == 'RS512'
+					|| this.state.alg == 'PS256'
+					|| this.state.alg == 'PS384'
+					|| this.state.alg == 'PS512'
+				) {
+					// already set to an RSA value, no need to change it 
+					return;
+				} else {
+					// otherwise set a default
+					this.setAlgVal('RS256');
+				}
+			} else if (k.kty == 'EC') {
+				const crv = k.crv;
+				if (!crv) {
+					// no curve value, don't change it
+					return;
+				} else if (crv == 'P-256') {
+					this.setAlgVal('ES256');
+				} else if (crv == 'P-384') {
+					this.setAlgVal('ES384');
+				} else if (crv == 'P-521') {
+					this.setAlgVal('ES512');
+				} else if (crv == 'secp256k1') {
+					this.setAlgVal('ES256K');
+				}
+			} else if (k.kty == 'oct') {
+				if (this.state.alg == 'HS256' 
+					|| this.state.alg == 'HS384'
+					|| this.state.alg == 'HS512'
+				) {
+					// already set to an HMAC value, no need to change it 
+					return;
+				} else {
+					// otherwise set a default
+					this.setAlgVal('HS256');
+				}
+			} else if (k.kty == 'OKP') {
+				this.setAlgVal('EdDSA');
+			}
+
+		
+		} catch (e) {
+			// not a valid key, don't change anything
+			return;
 		}
 	}
 	
@@ -146,8 +207,8 @@ class MkJose extends React.Component {
 					<InputForm payload={this.state.payload} payloadMode={this.state.payloadMode} t={this.props.t}
 						setPayload={this.setPayload} selectTab={this.selectTab} clearPayload={this.clearPayload} />
 					<SigningAlg alg={this.state.alg} setAlg={this.setAlgEvt} t={this.props.t} />
-					<SigningKey jwk={this.state.jwk} keyLoading={this.keyLoading} t={this.props.t} 
-						setKey={this.setKey} setAlgForKty={this.setAlgForKty} clearKey={this.clearKey} callMkJwk={this.callMkJwk} />
+					<SigningKey jwk={this.state.jwk} alg={this.state.alg} keyLoading={this.keyLoading} t={this.props.t} 
+						setKey={this.setKey} clearKey={this.clearKey} callMkJwk={this.callMkJwk} />
 					<GenerateButton generate={this.generate} t={this.props.t} />
 				</Container>
 			</Section>
@@ -759,6 +820,8 @@ const SigningAlg = ({...props}) => {
 	                <option value="PS256">{props.t('signing_alg.PS256')}</option>
 	                <option value="PS384">{props.t('signing_alg.PS384')}</option>
 	                <option value="PS512">{props.t('signing_alg.PS512')}</option>
+	                <option value="ES256K">{props.t('signing_alg.ES256K')}</option>
+	                <option value="EdDSA">{props.t('signing_alg.EdDSA')}</option>
 				</Form.Select>
 			</Form.Control>
 		</Form.Field>
@@ -787,9 +850,8 @@ class SigningKey extends React.Component {
 			var k = this.loadPresetKey(kty);
 			this.props.setKey(JSON.stringify(k, null, 4));
 		} else {
-			this.props.callMkJwk(kty);
+			this.props.callMkJwk(kty, this.props.alg);
 		}
-		this.props.setAlgForKty(kty);
 	}
 	
 	loadPresetKey = (kty) => {
@@ -818,17 +880,29 @@ class SigningKey extends React.Component {
 			  "kty":"oct",
 			  "k":"cMjpBMzDsh92LJfxqOeIZ8d9K0-p7-1ppPQAArKLdZZtr6LrkOO_8VjjRJT3hWPB1rd5r8U3bPvZo9W_hnt1VLR14BamM1sjn6_64gTCdxUKD3pxsmM848-WxL-esBIKcy2z6Lp6FeXyhkLJP-yETife6lrIdr_HNHiqI3Sy0TJLfd-QOGMDAuHUAMYLAqinKPgS3UqgOOh1-3Uak4rhX4gT4KgO-olKamW0uCiLLCzSGofyc3qeHN0eOqVYVEQ2jKIv7QzWt7tbrRWLX7AKtgR30zsKUgnyMsmirNJygDv9HY-BSsTswQpDtswj6AG3HQAgzr4BKRhn6wOi6ymKDg"
 			};
+		} else if (kty == 'OKP') {
+			return {
+			  "kty": "OKP",
+			  "d": "167PK2ixTR7o0LbPKT7281_6JPOEMOol3ZgUcrmZwkg",
+			  "crv": "Ed25519",
+			  "x": "GArObvFeRARjhFSbXgGKXwEMow-Tx1SKHg0ZaTuYweA"
+			};
 		}
 	}
 	
 	getShared = (jwk) => {
 		if (jwk) {
 			// get out the shared secret portion
-			const k = JSON.parse(jwk);
-			if (k.kty == "oct") {
-				const shared = base64url.decode(k.k);
-				return shared;
-			} else {
+			try {
+				const k = JSON.parse(jwk);
+				if (k.kty == "oct") {
+					const shared = base64url.decode(k.k);
+					return shared;
+				} else {
+					return '';
+				}
+			} catch (e) {
+				// bad key
 				return '';
 			}
 		} else {
@@ -843,7 +917,6 @@ class SigningKey extends React.Component {
 			kty: 'oct',
 			k: base64url.encode(shared)
 		};
-		this.props.setAlgForKty('oct');
 		this.props.setKey(JSON.stringify(k, null, 4));
 	}
 	
@@ -859,16 +932,6 @@ class SigningKey extends React.Component {
 					</Level.Item>
 				</Level.Side>
 				<Level.Side align="right">
-					<Level.Item>
-						{this.state.keyGen != 'shared' && ( 
-						<>
-							{this.props.t('signing_key.load')}
-							<Button onClick={this.genKey('RSA')}>{this.props.t('signing_key.rsa')}</Button>
-							<Button onClick={this.genKey('EC')}>{this.props.t('signing_key.ec')}</Button>
-							<Button onClick={this.genKey('oct')}>{this.props.t('signing_key.oct')}</Button>
-						</>
-						)}
-					</Level.Item>
 					<Level.Item>
 						{this.props.t('signing_key.source')}
 						<Tabs type='toggle-rounded'>
@@ -888,14 +951,30 @@ class SigningKey extends React.Component {
 					</Level.Item>
 				</Level.Side>
 			</Level>			
+			{this.state.keyGen != 'shared' && ( 
+				<Level>
+					<Level.Side align="left">
+						{ this.state.keyGen == 'generate' && (
+							<Notification color="info" dangerouslySetInnerHTML={{__html: this.props.t('signing_key.mkjwk')}}></Notification>
+						)}
+					</Level.Side>
+					<Level.Side align="right">
+						<Level.Item>
+							{this.state.keyGen == 'preset' ? this.props.t('signing_key.load') : this.props.t('signing_key.generate')}
+							<Button onClick={this.genKey('RSA')}>{this.props.t('signing_key.rsa')}</Button>
+							<Button onClick={this.genKey('EC')}>{this.props.t('signing_key.ec')}</Button>
+							<Button onClick={this.genKey('oct')}>{this.props.t('signing_key.oct')}</Button>
+							<Button onClick={this.genKey('OKP')}>{this.props.t('signing_key.okp')}</Button>
+						</Level.Item>
+					</Level.Side>
+				</Level>
+			)}
 			<Form.Field>
 				<Form.Control loading={this.props.keyLoading}>
-					{ this.state.keyGen == 'generate' && (
-						<Notification color="info" dangerouslySetInnerHTML={{__html: this.props.t('signing_key.mkjwk')}}></Notification>
-					)}
 					{ this.state.keyGen == 'shared' && (
 						<Form.Input className="has-background-light has-text-primary" type="text" placeholder={this.props.t('signing_key.shared_secret')} onChange={this.setShared} value={this.getShared(this.props.jwk)} />
 					)}
+
 					<Form.Textarea rows={10} spellCheck={false} onChange={this.setKey} value={this.props.jwk} />
 					
 				</Form.Control>
@@ -925,7 +1004,7 @@ const OutputForm = ({...props}) => {
 			</Form.Control>
 		</Form.Field>
 		<Form.Control>
-			<Button size="large" color="primary" fullwidth onClick={props.copyToClipboard}>{props.t('output_form.copy')}</Button>
+			<Button size="large" color="info" fullwidth onClick={props.copyToClipboard}>{props.t('output_form.copy')}</Button>
 		</Form.Control>
 	</>
 	);
