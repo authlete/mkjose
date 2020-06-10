@@ -45,7 +45,9 @@ const resources = {
 		            ES512: 'ES512 (ECDSA using P-521 and SHA-512)',
 		            PS256: 'PS256 (RSASSA-PSS using SHA-256 and MGF1 with SHA-256)',
 		            PS384: 'PS384 (RSASSA-PSS using SHA-384 and MGF1 with SHA-384)',
-		            PS512: 'PS512 (RSASSA-PSS using SHA-512 and MGF1 with SHA-512)'
+		            PS512: 'PS512 (RSASSA-PSS using SHA-512 and MGF1 with SHA-512)',
+		            ES256K: 'ES256K (ECDSA using secp256k1 and SHA-256)',
+		            EdDSA: 'EdDSA (Edwards Curve DSA using Ed25519)'
 				},
 				signing_key: {
 					label: 'Signing Key',
@@ -56,9 +58,11 @@ const resources = {
 					rsa: 'RSA',
 					ec: 'EC',
 					oct: 'oct',
+					okp: 'OKP',
 					mkjwk: 'Keys will be generated using the <a href="https://mkjwk.org/" target="_blank">mkjwk</a> online key generation service.',
-					source: 'Source:',
-					load: 'Load:'
+					source: 'Source: ',
+					load: 'Load: ',
+					generate: 'Generate: '
 				},
 				generate: 'Generate',
 				output_form: {
