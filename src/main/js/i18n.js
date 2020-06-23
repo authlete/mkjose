@@ -85,11 +85,13 @@ const resources = {
 					payload: 'ペイロード',
 					payload_ro: 'リクエストオブジェクト用ペイロード',
 					payload_ciba: 'バックチャネル認証リクエスト用ペイロード',
+					payload_ca: 'クライアントアサーション用ペイロード',
 					tabs: {
 						desktop: {
 							plain: '直接入力',
 							ciba: 'CIBA',
-							ro: 'リクエストオブジェクト'
+							ro: 'リクエストオブジェクト',
+							ca: 'クライアントアサーション',
 						}
 					}
 				},
