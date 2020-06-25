@@ -345,13 +345,18 @@ class CibaPayload extends React.Component {
 		var p = this.state.payload;
 		
 		var val = e.target.value;
+		var type = e.target.attributes["type"].value;
 				
-		if (e.target.attributes["type"].value == 'number') {
+		if (type == 'number') {
 			val = Number(val);
 		}
 		
 		p[field] = val;
 		
+		if (!val && type == 'number') {
+			delete p[field];
+		}
+
 		this.props.setPayload(JSON.stringify(p, null, 4));
 		
 		this.setState({
@@ -466,13 +471,18 @@ class RequestObjectPayload extends React.Component {
 		var p = this.state.payload;
 		
 		var val = e.target.value;
+		var type = e.target.attributes["type"].value;
 				
-		if (e.target.attributes["type"].value == 'number') {
+		if (type == 'number') {
 			val = Number(val);
 		}
 		
 		p[field] = val;
 		
+		if (!val && type == 'number') {
+			delete p[field];
+		}
+
 		this.props.setPayload(JSON.stringify(p, null, 4));
 		
 		this.setState({
@@ -686,13 +696,18 @@ class ClientAssertionPayload extends React.Component {
 		var p = this.state.payload;
 		
 		var val = e.target.value;
+		var type = e.target.attributes["type"].value;
 				
-		if (e.target.attributes["type"].value == 'number') {
+		if (type == 'number') {
 			val = Number(val);
 		}
 		
 		p[field] = val;
 		
+		if (!val && type == 'number') {
+			delete p[field];
+		}
+
 		this.props.setPayload(JSON.stringify(p, null, 4));
 		
 		this.setState({
