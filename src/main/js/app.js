@@ -324,8 +324,8 @@ class CibaPayload extends React.Component {
 	}
 	
 	fieldTypes = {
-		exp: 'datetime-local',
-		nbf: 'datetime-local',
+		exp: 'number',
+		nbf: 'number',
 		iss: 'text',
 		aud: 'text',
 		scope: 'text',
@@ -346,8 +346,7 @@ class CibaPayload extends React.Component {
 		
 		var val = e.target.value;
 				
-		if (e.target.attributes["type"].value == 'number' 
-			|| e.target.attributes["type"].value == 'datetime-local') {
+		if (e.target.attributes["type"].value == 'number') {
 			val = Number(val);
 		}
 		
@@ -448,7 +447,7 @@ class RequestObjectPayload extends React.Component {
 	}
 
 	fieldTypes = {
-		exp: 'datetime-local',
+		exp: 'number',
 		iss: 'text',
 		aud: 'text',
 		scope: 'text',
@@ -468,8 +467,7 @@ class RequestObjectPayload extends React.Component {
 		
 		var val = e.target.value;
 				
-		if (e.target.attributes["type"].value == 'number' 
-			|| e.target.attributes["type"].value == 'datetime-local') {
+		if (e.target.attributes["type"].value == 'number') {
 			val = Number(val);
 		}
 		
@@ -677,9 +675,9 @@ class ClientAssertionPayload extends React.Component {
 		iss: 'text',
 		sub: 'text',
 		aud: 'text',
-		exp: 'datetime-local',
-		nbf: 'datetime-local',
-		iat: 'datetime-local',
+		exp: 'number',
+		nbf: 'number',
+		iat: 'number',
 		jti: 'text',
 	}
 
@@ -689,8 +687,7 @@ class ClientAssertionPayload extends React.Component {
 		
 		var val = e.target.value;
 				
-		if (e.target.attributes["type"].value == 'number' 
-			|| e.target.attributes["type"].value == 'datetime-local') {
+		if (e.target.attributes["type"].value == 'number') {
 			val = Number(val);
 		}
 		
