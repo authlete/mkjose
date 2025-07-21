@@ -381,7 +381,7 @@ const InputForm = ({...props}) => {
 		payload = <ClientAssertionPayload payload={props.payload}
 			setPayload={props.setPayload} t={props.t} />;
 	} else if (props.payloadMode == 'dpop') {
-		label = 'DPoP JWT Payload';
+		label = props.t('input_form.payload_dpop');
 		payload = <DpopPayload payload={props.payload}
 			setPayload={props.setPayload} t={props.t} />;
 	}
@@ -1235,7 +1235,7 @@ const HeaderForm = ({...props}) => {
 				<Level.Side align="left">
 					<Level.Item>
 						<Form.Field>
-							<Form.Label className="is-medium">JWT Header</Form.Label>
+							<Form.Label className="is-medium">{props.t('dpop.jwt_header')}</Form.Label>
 						</Form.Field>
 					</Level.Item>
 				</Level.Side>
@@ -1637,7 +1637,7 @@ class DpopPayload extends React.Component {
 							<tbody>
 								{fields}
 								<tr>
-									<td>Arbitrary JSON</td>
+									<td>{this.props.t('dpop.arbitrary')}</td>
 									<td>
 										<Form.Textarea 
 											rows={5} 

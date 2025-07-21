@@ -10,12 +10,14 @@ const resources = {
 					payload_ro: 'Payload for Request Object',
 					payload_ciba: 'Payload for Backchannel Authentication Request',
 					payload_ca: 'Payload for Client Assertion',
+					payload_dpop: 'Payload for DPoP JWT',
 					tabs: {
 						desktop: {
 							plain: 'Plain',
 							ciba: 'CIBA',
 							ro: 'Request Object',
 							ca: 'Client Assertion',
+							dpop: 'DPoP JWT',
 						},
 						mobile: {
 							plain: 'Plain',
@@ -30,6 +32,10 @@ const resources = {
 				},
 				ca: {
 					arbitrary: 'Arbitrary JSON'
+				},
+				dpop: {
+					arbitrary: 'Arbitrary JSON',
+					jwt_header: 'DPoP JWT Header'
 				},
 				signing_alg: {
 					label: 'Signing Algorithm',
@@ -86,12 +92,14 @@ const resources = {
 					payload_ro: 'リクエストオブジェクト用ペイロード',
 					payload_ciba: 'バックチャネル認証リクエスト用ペイロード',
 					payload_ca: 'クライアントアサーション用ペイロード',
+					payload_dpop: 'DPoP JWT 用ペイロード',
 					tabs: {
 						desktop: {
 							plain: '直接入力',
 							ciba: 'CIBA',
 							ro: 'リクエストオブジェクト',
 							ca: 'クライアントアサーション',
+							dpop: 'DPoP JWT'
 						}
 					}
 				},
@@ -100,6 +108,10 @@ const resources = {
 				},
 				ca: {
 					arbitrary: '任意の JSON'
+				},
+				dpop: {
+					arbitrary: '任意の JSON',
+					jwt_header: 'DPoP JWT ヘッダー'
 				},
 				signing_alg: {
 					label: '署名アルゴリズム',
