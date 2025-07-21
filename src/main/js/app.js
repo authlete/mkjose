@@ -1279,10 +1279,11 @@ class DpopPayload extends React.Component {
 		var arbString = '';
 		var customFields = {};
 		
-		// Separate default fields from custom fields
+		// Separate default and preset fields from custom fields
 		const defaultFields = ['jti', 'htm', 'htu', 'iat'];
+		const presetFields = ['nbf', 'exp', 'ath', 'nonce'];
 		Object.keys(p).forEach((field) => {
-			if (!defaultFields.includes(field)) {
+			if (!defaultFields.includes(field) && !presetFields.includes(field)) {
 				customFields[field] = p[field];
 			}
 		});
@@ -1293,15 +1294,20 @@ class DpopPayload extends React.Component {
 			// Initialize with default nbf and exp in arbitrary fields
 			const now = Math.floor(Date.now() / 1000);
 			const defaultArbitrary = {
-				nbf: now,
-				exp: now + 600
 			};
 			arbString = JSON.stringify(defaultArbitrary, null, 4);
 		}
 		
 		this.state = {
 			payload: p,
-			arbString: arbString
+			arbString: arbString,
+			presetEnabled: {
+				nbf: p.nbf !== undefined,
+				exp: p.exp !== undefined,
+				ath: p.ath !== undefined,
+				nonce: p.nonce !== undefined
+			},
+			accessToken: ''
 		};
 	}
 	
@@ -1315,6 +1321,8 @@ class DpopPayload extends React.Component {
 	}
 
 	defaultFields = ['jti', 'htm', 'htu', 'iat'];
+	
+	presetFields = ['nbf', 'exp', 'ath', 'nonce']; // Additional preset fields
 
 	generateDefaultPayload = () => {
 		// Generate random JTI (32 bytes base64url encoded)
@@ -1333,7 +1341,11 @@ class DpopPayload extends React.Component {
 		jti: 'text',
 		htm: 'text',
 		htu: 'text',
-		iat: 'number'
+		iat: 'number',
+		nbf: 'number',
+		exp: 'number',
+		ath: 'text',
+		nonce: 'text'
 	}
 
 	setPayloadItem = (field) => (e) => {
@@ -1376,14 +1388,24 @@ class DpopPayload extends React.Component {
 					}
 				});
 				
-				// Add arbitrary fields
+				// Copy preset fields
+				this.presetFields.forEach((field) => {
+					if (this.state.payload[field] !== undefined) {
+						p[field] = this.state.payload[field];
+					}
+				});
+				
+				// Add arbitrary fields (override preset fields if specified)
 				Object.keys(arbFields).forEach((field) => {
-					p[field] = arbFields[field];
+					// Don't override default fields
+					if (!this.defaultFields.includes(field)) {
+						p[field] = arbFields[field];
+					}
 				});
 				
 				this.updatePayload(p);
 			}
-		} catch (e) {
+		} catch (err) {
 			// Invalid JSON, ignore
 		}
 		
@@ -1392,8 +1414,15 @@ class DpopPayload extends React.Component {
 
 	clearArbitrary = () => {
 		var p = {};
-		// Keep only default fields
+		// Keep default fields
 		this.defaultFields.forEach((field) => {
+			if (this.state.payload[field] !== undefined) {
+				p[field] = this.state.payload[field];
+			}
+		});
+		
+		// Keep preset fields
+		this.presetFields.forEach((field) => {
 			if (this.state.payload[field] !== undefined) {
 				p[field] = this.state.payload[field];
 			}
@@ -1418,11 +1447,54 @@ class DpopPayload extends React.Component {
 		this.setPayloadItem('iat')({target: {value: now, attributes: {type: {value: 'number'}}}});
 	}
 
+	setCurrentTimeNbf = () => {
+		const now = Math.floor(Date.now() / 1000);
+		this.setPayloadItem('nbf')({target: {value: now, attributes: {type: {value: 'number'}}}});
+	}
+
+	setExpTime = () => {
+		const now = Math.floor(Date.now() / 1000);
+		const exp = now + 600; // 10 minutes from now
+		this.setPayloadItem('exp')({target: {value: exp, attributes: {type: {value: 'number'}}}});
+	}
+
+	setAccessToken = (e) => {
+		const accessToken = e.target.value;
+		this.setState({ accessToken });
+		
+		// Auto-generate hash if access token is provided and ath is enabled
+		// Check if ath field exists in payload to determine if it's enabled
+		const athEnabled = this.state.payload.hasOwnProperty('ath') || this.state.presetEnabled.ath;
+		if (accessToken && athEnabled) {
+			this.generateHashFromToken(accessToken);
+		} else if (!accessToken && athEnabled) {
+			// Clear ath field if access token is empty
+			this.setPayloadItem('ath')({target: {value: '', attributes: {type: {value: 'text'}}}});
+		}
+	}
+
+	generateHashFromToken = (accessToken) => {
+		// Create SHA-256 hash
+		const encoder = new TextEncoder();
+		const data = encoder.encode(accessToken);
+		crypto.subtle.digest('SHA-256', data)
+			.then(hashBuffer => {
+				// Convert to base64url
+				const hashArray = new Uint8Array(hashBuffer);
+				const athValue = base64url(hashArray);
+				
+				this.setPayloadItem('ath')({target: {value: athValue, attributes: {type: {value: 'text'}}}});
+			})
+			.catch(e => {
+				alert('Error generating hash: ' + e.message);
+			});
+	}
+
 	
 	render() {
 		const fields = [];
 		
-		// Render default fields
+		// Render default fields (always required)
 		this.defaultFields.forEach((field) => {
 			const isJti = field === 'jti';
 			const isIat = field === 'iat';
@@ -1453,6 +1525,109 @@ class DpopPayload extends React.Component {
 				</tr>
 			);
 		});
+
+		// Render preset fields (optional)
+		this.presetFields.forEach((field) => {
+			const isActive = this.state.payload.hasOwnProperty(field) && this.state.payload[field] !== undefined;
+			const isNbf = field === 'nbf';
+			const isExp = field === 'exp';
+			const isAth = field === 'ath';
+			
+			fields.push(
+				<tr key={'dpop-preset-' + field} style={{opacity: isActive ? 1 : 0.5}}>
+					<td>
+						<input 
+							type="checkbox" 
+							checked={isActive}
+							onChange={(e) => {
+								if (e.target.checked) {
+									// Enable field with default value
+									let defaultValue = '';
+									if (isNbf || isExp) {
+										const now = Math.floor(Date.now() / 1000);
+										defaultValue = isExp ? now + 600 : now;
+									}
+									this.setPayloadItem(field)({target: {value: defaultValue, attributes: {type: {value: this.fieldTypes[field]}}}});
+									// Update presetEnabled state
+									this.setState(prevState => ({
+										presetEnabled: {...prevState.presetEnabled, [field]: true}
+									}));
+								} else {
+									// Disable field
+									this.clearPayloadItem(field)();
+									// Update presetEnabled state
+									this.setState(prevState => ({
+										presetEnabled: {...prevState.presetEnabled, [field]: false}
+									}));
+								}
+							}}
+							style={{marginRight: '8px'}}
+						/>
+						<code>{field}</code>
+						{!isActive && <span style={{fontSize: '12px', color: '#999'}}> (disabled)</span>}
+					</td>
+					<td>
+						{isAth && isActive ? (
+							<div style={{display: 'flex', flexDirection: 'column', gap: '4px'}}>
+								<div style={{display: 'flex', alignItems: 'center'}}>
+									<span style={{fontSize: '12px', marginRight: '8px', minWidth: '80px'}}>Access Token:</span>
+									<input 
+										type="text" 
+										size={50} 
+										placeholder="Enter access token to auto-generate S256 hash"
+										onChange={this.setAccessToken} 
+										value={this.state.accessToken} 
+										style={{backgroundColor: 'white'}}
+									/>
+								</div>
+								<div style={{display: 'flex', alignItems: 'center'}}>
+									<span style={{fontSize: '12px', marginRight: '8px', minWidth: '80px'}}>ath (S256):</span>
+									<input 
+										id={'dpop-preset-' + field} 
+										type={this.fieldTypes[field]} 
+										size={50} 
+										onChange={this.setPayloadItem(field)} 
+										value={this.state.payload[field] || ''} 
+										disabled={!isActive}
+										style={{backgroundColor: isActive ? 'white' : '#f5f5f5'}}
+										placeholder={this.state.accessToken ? 'Auto-generated from access token' : 'Manual input or use access token above'}
+									/>
+								</div>
+							</div>
+						) : (
+							<>
+								<input 
+									id={'dpop-preset-' + field} 
+									type={this.fieldTypes[field]} 
+									size={60} 
+									onChange={this.setPayloadItem(field)} 
+									value={this.state.payload[field] || ''} 
+									disabled={!isActive}
+									style={{backgroundColor: isActive ? 'white' : '#f5f5f5'}}
+								/>
+								{isActive && isNbf && (
+									<Button size="small" onClick={this.setCurrentTimeNbf} style={{marginLeft: '8px'}}>
+										Now
+									</Button>
+								)}
+								{isActive && isExp && (
+									<Button size="small" onClick={this.setExpTime} style={{marginLeft: '8px'}}>
+										Now + 10m
+									</Button>
+								)}
+							</>
+						)}
+					</td>
+					<td>
+						{isActive ? (
+							<Button onClick={this.clearPayloadItem(field)}><i className="far fa-trash-alt"></i></Button>
+						) : (
+							<span style={{color: '#ccc'}}>—</span>
+						)}
+					</td>
+				</tr>
+			);
+		});
 		
 		return (
 			<Card color="light">
@@ -1468,7 +1643,7 @@ class DpopPayload extends React.Component {
 											rows={5} 
 											cols={50} 
 											spellCheck="false"
-											placeholder='{"nbf": 1234567890, "exp": 1234568490, "custom_field": "value"}'
+											placeholder='{"custom_claim": "value", "another": 123}'
 											onChange={this.setArbitrary} 
 											value={this.state.arbString} 
 										/>
