@@ -68,7 +68,7 @@ public class GenerateEndpoint
         args.add("--sign");
 
         String[] keys = new String[] {
-                "payload", "signing-alg", "jwk-signing-alg"
+                "payload", "signing-alg", "jwk-signing-alg", "jws-header"
         };
 
         for (String key : keys)
